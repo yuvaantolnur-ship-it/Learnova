@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Import Scorelytics records</title>
+  <script src="/runtime-config.js"></script>
+  <script src="/api-client.js"></script>
+  <link rel="stylesheet" href="Scorelytics_login.css">
+</head>
+<body>
+  <h1 class="logo">Score<span>lytics</span></h1>
+  <div class="card">
+    <h2>Import old records</h2>
+    <p>Select your old Scorelytics <code>users.json</code>, then choose your own account. Only that account’s test records and saved school location are sent. Passwords and other accounts are never uploaded.</p>
+    <label for="legacyFile">Old users.json file</label>
+    <input id="legacyFile" type="file" accept=".json,application/json">
+    <label for="legacyAccount">Account to import</label>
+    <select id="legacyAccount" disabled>
+      <option value="">Choose a file first</option>
+    </select>
+    <button id="importButton" type="button" disabled>Import selected account</button>
+    <p id="importStatus" role="status" aria-live="polite"></p>
+    <a href="/">Return to Scorelytics</a>
+  </div>
+  <script src="/legacy-import.js"></script>
+</body>
+</html>

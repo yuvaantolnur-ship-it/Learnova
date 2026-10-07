@@ -1,0 +1,5 @@
+{
+  "appId": "com.scorelytics.app",
+  "appName": "Scorelytics",
+  "webDir": "capacitor-web"
+}

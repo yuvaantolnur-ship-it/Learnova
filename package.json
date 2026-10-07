@@ -1,0 +1,56 @@
+{
+  "name": "scorelytics",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scorelytics desktop app and hosted cross-platform API",
+  "main": "main_desktop.js",
+  "scripts": {
+    "start": "node Scorelytics_server.js",
+    "start:cloud": "node cloud_server.js",
+    "start:desktop": "npm run desktop:prepare && electron .",
+    "build:windows": "python build.py",
+    "desktop:prepare": "node prepare-desktop.js",
+    "build:desktop:windows": "npm run desktop:prepare && electron-builder --win nsis",
+    "build:desktop:mac": "npm run desktop:prepare && electron-builder --mac dmg",
+    "cap:prepare": "node prepare-capacitor.js",
+    "cap:sync": "npm run cap:prepare && cap sync",
+    "cap:open-android": "cap open android",
+    "cap:open-ios": "cap open ios"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "express": "^5.2.1",
+    "lowdb": "^7.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/android": "8.4.3",
+    "@capacitor/cli": "8.4.3",
+    "@capacitor/core": "8.4.3",
+    "@capacitor/ios": "8.4.3",
+    "@tauri-apps/cli": "^2.12.1",
+    "electron": "^44.5.1",
+    "electron-builder": "26.15.3"
+  },
+  "author": "Scorelytics Dev Teams",
+  "license": "ISC",
+  "build": {
+    "appId": "com.scorelytics.app",
+    "productName": "Scorelytics",
+    "asar": true,
+    "files": [
+      "main_desktop.js",
+      "desktop-config.json",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ]
+    }
+  }
+}

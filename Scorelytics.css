@@ -1,0 +1,783 @@
+:root,
+:root[data-theme="midnight"] {
+  color-scheme: dark;
+  --theme-bg-main: #0b0f17;
+  --theme-bg-sidebar: #020617;
+  --theme-bg-card: #1f2937;
+  --theme-bg-input: #111827;
+  --theme-text-main: #e5e7eb;
+  --theme-text-muted: #9ca3af;
+  --theme-accent: #3b82f6;
+  --theme-accent-strong: #2563eb;
+  --theme-border: #374151;
+}
+
+:root[data-theme="cyberpunk"] {
+  --theme-bg-main: #0c0014;
+  --theme-bg-sidebar: #10001a;
+  --theme-bg-card: #200033;
+  --theme-bg-input: #10001a;
+  --theme-text-main: #00ffcc;
+  --theme-text-muted: #c4a3d9;
+  --theme-accent: #ff007f;
+  --theme-accent-strong: #d9006c;
+  --theme-border: #7e22ce;
+}
+
+:root[data-theme="matrix"] {
+  --theme-bg-main: #050505;
+  --theme-bg-sidebar: #050505;
+  --theme-bg-card: #0d0d0d;
+  --theme-bg-input: #141414;
+  --theme-text-main: #33ff33;
+  --theme-text-muted: #16a34a;
+  --theme-accent: #00aa00;
+  --theme-accent-strong: #008000;
+  --theme-border: #14532d;
+}
+
+body {
+  margin: 0;
+  background: var(--theme-bg-main);
+  color: var(--theme-text-main);
+  font-family: "Segoe UI";
+}
+
+/* TOPBAR */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 20px;
+  background: var(--theme-bg-sidebar);
+}
+
+/* LOGO */
+.logo span {
+  background: linear-gradient(90deg, var(--theme-accent), var(--theme-accent-strong));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* BUTTON */
+.user-area button {
+  background: var(--theme-accent-strong);
+  color:white;
+  padding:8px 12px;
+  border-radius:6px;
+}
+
+/* LAYOUT */
+.layout { display:flex; }
+
+.sidebar {
+  width: 220px;
+  background: var(--theme-bg-sidebar);
+
+  padding: 20px 10px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  border-right: 1px solid var(--theme-border);
+}
+
+.sidebar p {
+  padding: 10px 15px;
+  border-radius: 10px;
+
+  color: var(--theme-text-muted);
+}
+
+/* hover */
+.sidebar p[id^="tab-"] {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sidebar p[id^="tab-"]:hover {
+  background: var(--theme-bg-card);
+  color: var(--theme-text-main);
+  transform: translateX(3px);
+}
+
+/* active */
+.sidebar p[id^="tab-"].active {
+  background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-strong));
+  color: white;
+}
+
+/* CONTENT */
+.content {
+  flex: 1;
+  padding: 25px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: flex-start;   /* ✅ THIS IS THE KEY FIX */
+  align-items: stretch;          /* ✅ not center */
+}
+
+/* CARDS */
+.card {
+  background: var(--theme-bg-card);
+
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+
+  border: 1px solid var(--theme-border);
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* 🔥 Lift on hover */
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.45);
+}
+
+
+/* INPUT */
+input {
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  background: var(--theme-bg-input);
+  color: var(--theme-text-main);
+  border: 1px solid var(--theme-border);
+}
+
+.profile-theme-section p {
+  color: var(--theme-text-muted);
+}
+
+.profile-theme-section select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-bg-input);
+  color: var(--theme-text-main);
+  font-size: 14px;
+}
+
+.profile-theme-section select:focus-visible {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 2px;
+}
+
+/* LOADER */
+#pageLoader {
+  position:fixed;
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background: var(--theme-bg-main);
+  z-index:999;
+}
+
+/* SPINNER */
+.spinner {
+  width:50px;
+  height:50px;
+  border:4px solid #333;
+  border-top:4px solid var(--theme-accent);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {transform: rotate(360deg);}
+}
+
+canvas {
+  animation: fadeChart 0.6s ease;
+}
+
+@keyframes fadeChart {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* MODAL BACKGROUND */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+/* MODAL BOX */
+.modal-content {
+  background: #111827;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+
+  animation: fadeIn 0.3s ease;
+}
+
+/* BUTTON ROW */
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+/* FADE IN */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+/* MODAL BACKGROUND */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  display: none;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+}
+
+/* MODAL BOX */
+.modal-content {
+  background: #111827;
+  padding: 20px;
+  border-radius: 12px;
+  width: 320px;
+
+  animation: popIn 0.25s ease;
+}
+
+/* BUTTON ROW */
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+/* ANIMATION */
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* TEST CARD */
+.test-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: var(--theme-bg-card);
+  padding: 12px 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+
+  transition: 0.2s;
+}
+
+/* HOVER LIFT */
+.test-card:hover {
+  transform: translateY(-2px);
+  background: var(--theme-border);
+}
+
+/* TEXT BLOCK */
+.test-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.subject {
+  font-weight: bold;
+}
+
+.score {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+/* BUTTON ROW */
+.actions button {
+  margin-left: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: var(--theme-bg-input);
+  color: white;
+}
+
+/* HOVER BUTTON */
+.actions button:hover {
+  background: var(--theme-border);
+}
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+
+  background: var(--theme-bg-input);
+  color: white;
+
+  padding: 12px 18px;
+  border-radius: 8px;
+
+  opacity: 0;
+  transform: translateY(20px);
+
+  pointer-events: none;
+
+  transition: all 0.4s ease;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-success {
+  background: #22c55e; /* green */
+}
+
+.toast-edit {
+  background: #3b82f6; /* blue */
+}
+
+.toast-error {
+  background: #ef4444; /* red */
+}
+
+.ranking-list {
+  margin-top: 10px;
+}
+
+.ranking-item {
+  display: flex;
+  justify-content: space-between;
+
+  padding: 8px 10px;
+  margin: 6px 0;
+
+  border-radius: 8px;
+
+  background: var(--theme-bg-input);
+  font-size: 14px;
+}
+
+/* Slight hover feel */
+.ranking-item:hover {
+  background: var(--theme-bg-card);
+}
+
+#testForm input {
+  width: 100%;
+
+  padding: 12px;
+  margin-top: 8px;
+
+  border-radius: 10px;
+  border: 1px solid var(--theme-border);
+
+  background: var(--theme-bg-input);
+  color: var(--theme-text-main);
+
+  font-size: 14px;
+
+  transition: all 0.2s ease;
+}
+
+#testForm input:focus {
+  outline: none;
+  border-color: var(--theme-accent);
+
+  box-shadow: 0 0 10px rgba(96,165,250,0.6);
+}
+
+#testForm {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#testForm button {
+  margin-top: 14px;
+
+  padding: 12px;
+  border-radius: 10px;
+
+  border: none;
+
+  background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-strong));
+  color: white;
+
+  font-weight: 600;
+  font-size: 14px;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+#testForm button:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 20px rgba(59,130,246,0.4);
+}
+
+#testForm input::placeholder {
+  color: #9ca3af;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.card.mini {
+  text-align: center;
+  padding: 15px;
+}
+
+#tests .card {
+  max-width: 600px;
+  margin: 0 auto 20px auto;
+}
+
+#testForm input {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ✅ IMPORTANT */
+.tab {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.tab.active {
+  display: flex;   /* ONLY active tab shows */
+}
+
+.card {
+  backdrop-filter: blur(4px);
+}
+
+.content {
+  padding: 25px;
+}
+
+.profile-card {
+  padding: 20px;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.profile-header img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid #374151;
+}
+
+.profile-header h2 {
+  margin: 0;
+}
+
+.password-section input {
+  width: 100%;
+
+  padding: 12px;
+  margin-top: 10px;
+
+  border-radius: 10px;
+  border: 1px solid var(--theme-border);
+
+  background: var(--theme-bg-input);
+  color: var(--theme-text-main);
+
+  transition: 0.2s ease;
+}
+
+.password-section input:focus {
+  outline: none;
+  border-color: var(--theme-accent);
+  box-shadow: 0 0 8px rgba(96,165,250,0.6);
+}
+
+#tests .card {
+  max-width: 500px;
+  margin: 0;   /* remove auto-centering */
+}
+
+#tests {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 20px;
+}
+
+#uploadPic {
+  margin-top: 10px;
+}
+
+#uploadPic::file-selector-button {
+  background: #374151;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#uploadPic::file-selector-button:hover {
+  background: #4b5563;
+}
+
+.password-section button {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.password-section button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 16px rgba(59,130,246,0.4);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.stats div {
+  background: var(--theme-bg-input);
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.stats h3 {
+  font-size: 13px;
+  color: var(--theme-text-muted);
+  margin: 0;
+}
+
+.stats p {
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#fileList {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+#fileList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 10px;
+  margin-bottom: 8px;
+
+  background: var(--theme-bg-input);
+  border-radius: 8px;
+} 
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+}
+
+.modal-content{
+  background:var(--theme-bg-card);
+  color:var(--theme-text-main);
+  padding:20px;
+  border-radius:12px;
+  width:300px;
+}
+
+.modal-actions{
+  margin-top:15px;
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+}
+
+.danger-btn{
+  background:#dc2626;
+  color:white;
+}
+
+
+#searchTests {
+  width: 280px;
+  max-width: 100%;
+
+  padding: 12px 16px;
+
+  border-radius: 12px;
+  border: none;
+
+  background: #1f2937;
+  color: white;
+
+  outline: none;
+}
+
+.profile-picture-section button {
+  background: rgba(71, 67, 67, 0.466);
+  color: white;
+
+  border: none;
+  border-radius: 10px;
+
+  padding: 10px 16px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.profile-picture-section button:hover {
+  background: black;
+}
+
+/* =====================================
+   VIEWFINDER UX FRAMEWORK 
+   ===================================== */
+.camera-container-deck {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 2px solid #1e293b;
+  background: #020617;
+  max-width: 640px;
+}
+
+/* Neon targets showing the user exactly where the text bounding box loops are */
+.camera-container-deck::before {
+  content: '';
+  position: absolute;
+  inset: 40px 60px;
+  border: 2px dashed rgba(96, 165, 250, 0.4);
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(2, 6, 23, 0.4); /* Dims the edges to focus light */
+  z-index: 10;
+  animation: pulseTargetGlow 2s infinite ease-in-out;
+}
+
+@keyframes pulseTargetGlow {
+  0% { border-color: rgba(96, 165, 250, 0.3); }
+  50% { border-color: rgba(96, 165, 250, 0.7); box-shadow: 0 0 15px rgba(96, 165, 250, 0.2), 0 0 0 9999px rgba(2, 6, 23, 0.45); }
+  100% { border-color: rgba(96, 165, 250, 0.3); }
+}
+
+#tab-export-pdf:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2)) !important;
+    color: #3b82f6 !important;
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   SCORELYTICS V2 HARDWARE-ACCELERATED TAB TRANSITIONS
+   ========================================================================== */
+
+/* 1. Establish the main content dashboard wrapper viewport viewport */
+.content {
+  flex: 1;
+  padding: 25px;
+  position: relative;
+  overflow-x: hidden; /* Prevents horizontal scrollbars during tab slides */
+  display: block;    /* Changed from flex to block to anchor absolute child elements */
+}
+
+/* 2. Configure the universal baseline transition tab canvas layers */
+.tab {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+
+  /* Smooth Animation Properties */
+  opacity: 0;
+  transform: translateX(20px); /* Slides slightly in from the right track */
+  visibility: hidden;
+  pointer-events: none;
+  
+  /* Absolute layering technique allows tabs to blend on top of each other during transitions */
+  position: absolute; 
+  top: 25px;
+  left: 25px;
+  right: 25px;
+  
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.3s;
+}
+
+/* 3. The Active State Class Rule: Gently wakes the selected tab window up */
+.tab.active {
+  opacity: 1;
+  transform: translateX(0); /* Slides smoothly back to center alignment */
+  visibility: visible;
+  pointer-events: auto;
+  position: relative; /* Restores standard document layout flow once visible */
+  top: 0;
+  left: 0;
+  right: 0;
+}

@@ -1,0 +1,10 @@
+node_modules
+build
+dist
+__pycache__
+*.py[cod]
+users.json
+Scorelytics_Setup.exe
+Inno Setup 6
+*.log
+.git

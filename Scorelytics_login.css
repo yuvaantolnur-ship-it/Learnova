@@ -1,0 +1,89 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #f1f5f9;
+}
+
+/* LOGO */
+.logo {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 34px;
+  font-weight: bold;
+}
+
+.logo span {
+  background: linear-gradient(90deg, #38bdf8, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* CARD */
+.card {
+  width: 350px;
+  margin: 60px auto;
+  padding: 30px;
+  background: rgba(30, 41, 59, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  text-align: center;
+}
+
+/* INPUT */
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: none;
+  background: #1e293b;
+  color: white;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 10px #38bdf8;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(90deg, #38bdf8, #8b5cf6);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* SIGNUP BUTTON */
+.signup-btn {
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.modal {
+  display: none;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  background: rgba(0,0,0,0.6);
+
+  justify-content: center;
+  align-items: center;
+
+  z-index: 99999;
+}

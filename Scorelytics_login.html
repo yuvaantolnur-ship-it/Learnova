@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Scorelytics</title>
+
+  <script src="/runtime-config.js"></script>
+  <script src="/api-client.js"></script>
+  <link rel="stylesheet" href="Scorelytics_login.css">
+</head>
+<body>
+<div id="topbar" style="display:flex; justify-content:space-between; padding:10px 20px;">
+  <p id="welcome"></p>
+ 
+</div>
+  <h1 class="logo">Score<span>lytics</span></h1>
+
+  <div class="card">
+
+    <h2>Login</h2>
+
+    <form onsubmit="login(event)">
+      <input id="username" name="username" placeholder="Username"
+             autocomplete="username" required>
+
+      <input id="email" name="email" type="email" placeholder="Recovery email"
+             autocomplete="email" style="display:none;">
+
+      <input id="password" name="password" type="password"
+             placeholder="Password" autocomplete="current-password" required>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <button class="signup-btn" onclick="signup()">Sign Up</button>
+
+  </div>
+
+  <script>
+   const cloudAuthEnabled = window.SCORELYTICS_RUNTIME_CONFIG?.authMode === "supabase";
+   let cloudSignupMode = false;
+   const usernameInput = document.getElementById("username");
+   const emailInput = document.getElementById("email");
+   const loginButton = document.querySelector("form button[type='submit']");
+   const signupButton = document.querySelector(".signup-btn");
+
+   if (cloudAuthEnabled) {
+     usernameInput.type = "email";
+     usernameInput.placeholder = "Email";
+     usernameInput.autocomplete = "email";
+     signupButton.textContent = "Create an account";
+   }
+
+   if (
+     localStorage.getItem("user") &&
+     (!cloudAuthEnabled || localStorage.getItem("scorelytics_access_token"))
+   ) {
+     window.location.href = "/";
+   } else if (cloudAuthEnabled) {
+     localStorage.removeItem("user");
+   }
+
+   async function login(event) {
+      event.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        if (cloudAuthEnabled && cloudSignupMode) {
+          const response = await fetch("/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              username,
+              email: emailInput.value,
+              password
+            })
+          });
+          const signupResult = await response.json();
+          if (!response.ok || !signupResult.success) {
+            throw new Error(signupResult.message || "Account creation failed.");
+          }
+          if (signupResult.access_token) {
+            localStorage.setItem("scorelytics_access_token", signupResult.access_token);
+            localStorage.setItem("scorelytics_refresh_token", signupResult.refresh_token);
+            localStorage.setItem("user", signupResult.username || username);
+            window.location.href = "/";
+            return;
+          }
+          alert(signupResult.message || "Check the recovery email to finish creating your account.");
+          return;
+        }
+
+        const res = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(cloudAuthEnabled
+            ? { email: username, password }
+            : { username, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          alert("Login successful!");
+          localStorage.setItem("user", data.username || username);
+          if (data.access_token) {
+            localStorage.setItem("scorelytics_access_token", data.access_token);
+            localStorage.setItem("scorelytics_refresh_token", data.refresh_token);
+          }
+          window.location.href = "/";
+        } else {
+          alert(data.message || "Invalid login");
+        }
+
+      } catch (err) {
+        console.error(err);
+        alert(err.message || "Server error");
+      }
+    }
+
+    async function signup() {
+      if (cloudAuthEnabled) {
+        cloudSignupMode = !cloudSignupMode;
+        usernameInput.type = cloudSignupMode ? "text" : "email";
+        usernameInput.placeholder = cloudSignupMode ? "Username" : "Email";
+        usernameInput.autocomplete = cloudSignupMode ? "username" : "email";
+        emailInput.style.display = cloudSignupMode ? "block" : "none";
+        emailInput.required = cloudSignupMode;
+        loginButton.textContent = cloudSignupMode ? "Create account" : "Login";
+        signupButton.textContent = cloudSignupMode ? "Back to login" : "Create an account";
+        document.querySelector(".card h2").textContent = cloudSignupMode ? "Create an account" : "Login";
+        return;
+      }
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const res = await fetch("/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          alert("Account created! Now log in.");
+        } else {
+          alert("User already exists!");
+        }
+
+      } catch (err) {
+        console.error(err);
+        alert("Server error");
+      }
+    }
+  </script>
+
+</body>
+</html>
