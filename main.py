@@ -28,7 +28,7 @@ def start_express_backend():
         raise FileNotFoundError("Node.js is missing. Rebuild the installer with the bundled Node.js runtime.")
 
     app_data_dir = os.environ.get("APPDATA") or os.path.expanduser("~")
-    log_directory = os.path.join(app_data_dir, "ScorelyticsData")
+    log_directory = os.path.join(app_data_dir, "LearnovaData")
     os.makedirs(log_directory, exist_ok=True)
     backend_log = open(os.path.join(log_directory, "backend.log"), "a", encoding="utf-8")
 
@@ -83,9 +83,9 @@ def main():
     # Establish a persistent data path layout right inside the local app directory data scopes
     if os.name == 'nt':
         app_data_root = os.environ.get('APPDATA') or os.path.expanduser('~')
-        storage_root = os.path.join(app_data_root, 'ScorelyticsData', 'BrowserCache')
+        storage_root = os.path.join(app_data_root, 'LearnovaData', 'BrowserCache')
     else:
-        storage_root = os.path.join(os.path.expanduser('~'), 'Library', 'Application Support', 'ScorelyticsData', 'BrowserCache') if sys.platform == 'darwin' else os.path.join(os.path.expanduser('~'), '.scorelyticsdata', 'BrowserCache')
+        storage_root = os.path.join(os.path.expanduser('~'), 'Library', 'Application Support', 'LearnovaData', 'BrowserCache') if sys.platform == 'darwin' else os.path.join(os.path.expanduser('~'), '.learnovadata', 'BrowserCache')
         
     os.makedirs(storage_root, exist_ok=True)
     profile.setPersistentStoragePath(storage_root)

@@ -11,11 +11,11 @@ function getSecureDataDirectory() {
   const homeDirectory = process.env.HOME || process.env.USERPROFILE;
   let dataDirectory;
   if (process.platform === 'win32') {
-    dataDirectory = path.join(process.env.APPDATA || homeDirectory, 'ScorelyticsData');
+    dataDirectory = path.join(process.env.APPDATA || homeDirectory, 'LearnovaData');
   } else if (process.platform === 'darwin') {
-    dataDirectory = path.join(homeDirectory, 'Library', 'Application Support', 'ScorelyticsData');
+    dataDirectory = path.join(homeDirectory, 'Library', 'Application Support', 'LearnovaData');
   } else {
-    dataDirectory = path.join(homeDirectory, '.scorelyticsdata');
+    dataDirectory = path.join(homeDirectory, '.learnovadata');
   }
   fs.mkdirSync(dataDirectory, { recursive: true });
   return dataDirectory;
