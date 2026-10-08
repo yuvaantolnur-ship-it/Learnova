@@ -259,5 +259,6 @@ async function loadAnalytics() {
     renderProfileStats(tests);
     renderInsight(tests);
     renderChart(tests);
+    renderSubjectCharts(tests);
     renderSubjectRanking(tests);
 }

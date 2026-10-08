@@ -21,7 +21,28 @@ def build_learnova():
             except Exception:
                 pass
 
-    # 3. Package all application files with PyInstaller
+    # 3. Stage only production Node dependencies for the bundled backend
+    print("\n📦 Staging production Node.js dependencies...")
+    node_runtime_dir = os.path.join("build", "node-runtime")
+    os.makedirs(node_runtime_dir, exist_ok=True)
+    shutil.copy2("package.json", node_runtime_dir)
+    shutil.copy2("package-lock.json", node_runtime_dir)
+
+    npm_cmd = "npm.cmd" if os.name == 'nt' else "npm"
+    result = subprocess.run(
+        [npm_cmd, "ci", "--omit=dev", "--ignore-scripts", "--no-audit", "--no-fund"],
+        cwd=node_runtime_dir,
+        capture_output=True,
+        text=True
+    )
+    if result.returncode != 0:
+        print("❌ Node.js dependency installation failed:")
+        print(result.stdout)
+        print(result.stderr)
+        sys.exit(1)
+    print("✅ Production Node.js dependencies staged!")
+
+    # 4. Package all application files with PyInstaller
     print("\n📦 Step 1: Bundling app elements with PyInstaller...")
     pyinstaller_cmd = [
         "python", "-m", "PyInstaller",
@@ -46,6 +67,7 @@ def build_learnova():
         "--add-data=ui.js;.",
         "--add-data=Learnova.css;.",
         "--add-data=Learnova_login.css;.",
+        f"--add-data={os.path.join(node_runtime_dir, 'node_modules')};node_modules",
         "main.py"
     ]
     

@@ -278,21 +278,34 @@ async function captureAndParseScore() {
             })
         });
 
+        if (!response.ok) {
+            throw new Error(`Scanner request failed with HTTP ${response.status}.`);
+        }
+
         const result = await response.json();
 
         if (result.success && result.data && !result.data.error) {
             if (typeof showToast === "function") showToast("Score Isolated! ✅", "success");
             await reviewScan(result.data);
         } else {
-            // If the manual scan failed to find text, reset the gate so background streaming resumes
             isScanThrottled = false;
-            if (typeof showToast === "function") showToast("Scan clear. No score pattern found 🔎", "error");
-            rearmScannerEngine();
+            const statusEl = document.getElementById("scannerStatus");
+            if (statusEl) {
+                statusEl.style.color = "#f59e0b";
+                statusEl.textContent = "No score detected in this frame. Keep the page steady; automatic scanning will retry.";
+            }
+            if (typeof showToast === "function") {
+                showToast("No score found in this frame. The scanner will keep trying.", "edit");
+            }
         }
     } catch (err) {
         console.error("Manual scan channel fault:", err);
         isScanThrottled = false;
-        rearmScannerEngine();
+        const statusEl = document.getElementById("scannerStatus");
+        if (statusEl) {
+            statusEl.style.color = "#ef4444";
+            statusEl.textContent = `Scan request failed: ${err.message || "Check the connection and try again."}`;
+        }
     }
 }
 

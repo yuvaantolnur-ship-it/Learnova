@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('studybot.py', '.'), ('generate_pdf.py', '.'), ('parser.py', '.'), ('Server.py', '.'), ('schedule_planner.py', '.'), ('Learnova_server.js', '.'), ('users.json', '.'), ('index.html', '.'), ('Learnova_login.html', '.'), ('Learnova_login.js', '.'), ('studybot.js', '.'), ('auth.js', '.'), ('scanner.js', '.'), ('Tests.js', '.'), ('ui.js', '.'), ('Learnova.css', '.'), ('Learnova_login.css', '.')],
+    datas=[('studybot.py', '.'), ('generate_pdf.py', '.'), ('parser.py', '.'), ('Server.py', '.'), ('schedule_planner.py', '.'), ('Learnova_server.js', '.'), ('users.json', '.'), ('index.html', '.'), ('Learnova_login.html', '.'), ('Learnova_login.js', '.'), ('studybot.js', '.'), ('auth.js', '.'), ('scanner.js', '.'), ('Tests.js', '.'), ('ui.js', '.'), ('Learnova.css', '.'), ('Learnova_login.css', '.'), ('build/node-runtime/node_modules', 'node_modules')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
