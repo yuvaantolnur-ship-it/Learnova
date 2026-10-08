@@ -1,7 +1,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-const apiBaseUrl = process.env.SCORELYTICS_PUBLIC_API_URL || "https://scorelytics-api.onrender.com";
+const apiBaseUrl = process.env.SCORELYTICS_PUBLIC_API_URL || "https://scorelytics-app.onrender.com";
 const parsedApiUrl = new URL(apiBaseUrl);
 
 if (

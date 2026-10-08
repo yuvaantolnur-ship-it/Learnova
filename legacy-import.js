@@ -6,7 +6,7 @@
   let legacyUsers = [];
 
   if (window.SCORELYTICS_RUNTIME_CONFIG?.authMode !== "supabase") {
-    status.textContent = "Legacy import is available in the hosted Scorelytics app.";
+    status.textContent = "Legacy import is available in the hosted Learnova app.";
     return;
   }
   if (!localStorage.getItem("scorelytics_access_token")) {

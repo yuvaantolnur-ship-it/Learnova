@@ -5,6 +5,7 @@ __pycache__
 *.py[cod]
 users.json
 Scorelytics_Setup.exe
+Learnova_Setup.exe
 Inno Setup 6
 *.log
 .git

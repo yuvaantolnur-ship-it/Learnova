@@ -32,7 +32,7 @@ def build_study_plan_pdf(username, data_matrix_string):
     except Exception:
         tests = []
 
-    target_pdf = f"Scorelytics_Study_Plan_{username}.pdf"
+    target_pdf = f"Learnova_Study_Plan_{username}.pdf"
     
     # Establish structural layout canvas dimensions (A4 Landscape)
     doc = SimpleDocTemplate(
@@ -57,7 +57,7 @@ def build_study_plan_pdf(username, data_matrix_string):
     td_task_style = ParagraphStyle('TDTask', parent=styles['Normal'], fontName='Helvetica', fontSize=10, textColor=colors.HexColor('#334155'), alignment=0)
 
     # Document Header Generation
-    story.append(Paragraph("SCORELYTICS DYNAMIC STUDY PLAN", title_style))
+    story.append(Paragraph("LEARNOVA DYNAMIC STUDY PLAN", title_style))
     story.append(Paragraph("Customized Diagnostic Schedule Matrix Framework", subtitle_style))
 
     # Run analytical check to isolate weakness trends

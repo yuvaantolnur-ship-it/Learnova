@@ -1,6 +1,6 @@
-# 🚀 Scorelytics v2.0 — Advanced Student Analytics Platform
+# 🚀 Learnova — Advanced Student Analytics Platform
 
-Scorelytics is a highly advanced, multi-layered dashboard suite engineered to help students unlock their development potential, track test performance loops, analyze velocity curves, and receive localized AI coaching. 
+Learnova is a multi-layered dashboard suite engineered to help students track test performance, analyze progress, and receive personalized study coaching.
 
 ## 🏗️ Technical Architecture Matrix
 The platform unifies desktop execution speed with advanced cloud integrations:
@@ -21,7 +21,7 @@ To bundle the entire architecture into a clean, standalone Windows distribution 
 ```bash
 python build.py
 ```
-*The script automatically sweeps lingering port locks, handles cache folders, calls PyInstaller, and outputs `Scorelytics_Setup.exe` into the workspace root in under 30 seconds.*
+*The script automatically sweeps lingering port locks, handles cache folders, calls PyInstaller, and outputs `Learnova_Setup.exe` into the workspace root.*
 
 ---
 🏆 Engineered with dedication by Yuvaan Tolnur — Unlocking Developer Potential Since Age 10.

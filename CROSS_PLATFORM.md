@@ -1,4 +1,4 @@
-# Scorelytics cross-platform setup
+# Learnova cross-platform setup
 
 The source now has a hosted API foundation, an Electron desktop shell, and a
 Capacitor mobile shell. The Supabase project and Render service still need to
@@ -34,7 +34,7 @@ Hosted StudyBot chats are saved to the signed-in account and can be continued
 on another device. Each account can keep up to 50 chats, and each chat is
 limited to 200 messages; users can delete chats from the StudyBot screen.
 Chat messages and recent test results are sent to the configured AI provider
-to generate replies. Deleting a chat removes the Scorelytics copy, but cannot
+to generate replies. Deleting a chat removes the Learnova copy, but cannot
 delete information already processed or retained by that provider. An adult
 should review the provider's privacy terms before enabling cloud AI.
 

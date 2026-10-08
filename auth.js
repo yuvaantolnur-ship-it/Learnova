@@ -1,6 +1,6 @@
 // =====================================
 // AUTH.JS
-// Scorelytics V2
+// Learnova
 // =====================================
 
 // Current Session
@@ -38,7 +38,7 @@ async function logout() {
         try {
             await fetch("/logout", { method: "POST" });
         } catch (error) {
-            console.error("Could not end the hosted Scorelytics session:", error);
+            console.error("Could not end the hosted Learnova session:", error);
         }
     }
     localStorage.removeItem("user");

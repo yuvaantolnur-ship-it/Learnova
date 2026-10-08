@@ -2,10 +2,10 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const webFiles = [
-  "Scorelytics.css",
-  "Scorelytics_login.css",
-  "Scorelytics_login.html",
-  "Scorelytics_login.js",
+  "Learnova.css",
+  "Learnova_login.css",
+  "Learnova_login.html",
+  "Learnova_login.js",
   "Tests.js",
   "analytics.js",
   "api-client.js",
@@ -17,7 +17,7 @@ const webFiles = [
   "studybot.js",
   "ui.js"
 ];
-const apiBaseUrl = process.env.SCORELYTICS_PUBLIC_API_URL || "https://scorelytics-api.onrender.com";
+const apiBaseUrl = process.env.SCORELYTICS_PUBLIC_API_URL || "https://scorelytics-app.onrender.com";
 const parsedApiUrl = new URL(apiBaseUrl);
 
 if (
@@ -36,10 +36,26 @@ const root = __dirname;
 const outputDirectory = path.join(root, "capacitor-web");
 fs.mkdirSync(outputDirectory, { recursive: true });
 
+const renamedFrontendFiles = [
+  "Scorelytics.css",
+  "Scorelytics_login.css",
+  "Scorelytics_login.html",
+  "Scorelytics_login.js"
+];
+for (const directory of [
+  outputDirectory,
+  path.join(root, "android", "app", "src", "main", "assets", "public")
+]) {
+  if (!fs.existsSync(directory)) continue;
+  for (const filename of renamedFrontendFiles) {
+    fs.rmSync(path.join(directory, filename), { force: true });
+  }
+}
+
 for (const filename of webFiles) {
   const source = fs.readFileSync(path.join(root, filename));
   const bundledSource = ["auth.js", "legacy-import.js"].includes(filename)
-    ? source.toString("utf8").replaceAll('"/login"', '"/Scorelytics_login.html"')
+    ? source.toString("utf8").replaceAll('"/login"', '"/Learnova_login.html"')
     : source;
   fs.writeFileSync(path.join(outputDirectory, filename), bundledSource);
 }

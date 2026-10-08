@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Scorelytics</string>
-    <string name="title_activity_main">Scorelytics</string>
+    <string name="app_name">Learnova</string>
+    <string name="title_activity_main">Learnova</string>
     <string name="package_name">com.scorelytics.app</string>
     <string name="custom_url_scheme">com.scorelytics.app</string>
 </resources>

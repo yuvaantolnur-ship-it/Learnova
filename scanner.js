@@ -1,5 +1,5 @@
 // =====================================
-// SCANNER.JS - Scorelytics V2 (Streaming Build 1.2.1)
+// SCANNER.JS - Learnova (Streaming Build 1.2.1)
 // =====================================
 
 let activeVideoStream = null;
@@ -33,7 +33,7 @@ function captureFrame() {
 // =====================================
 // 🟢 2. START CAMERA INTERFACE STREAM
 // =====================================
-async function startScorelyticsCamera() {
+async function startLearnovaCamera() {
     const videoEl = document.getElementById("webcamView");
     const statusEl = document.getElementById("scannerStatus");
     
@@ -82,7 +82,7 @@ async function startScorelyticsCamera() {
 // =====================================
 // 🛑 3. STOP CAMERA SYSTEMS & HARDWARE
 // =====================================
-function stopScorelyticsCamera() {
+function stopLearnovaCamera() {
     if (liveScanInterval) {
         clearInterval(liveScanInterval);
         liveScanInterval = null;
@@ -303,7 +303,7 @@ async function captureAndParseScore() {
 function initializeScanner() {
     const cameraBtn = document.getElementById("cameraBtn");
     if (cameraBtn) {
-        cameraBtn.addEventListener("click", startScorelyticsCamera);
+        cameraBtn.addEventListener("click", startLearnovaCamera);
     }
 }
 

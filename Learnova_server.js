@@ -27,7 +27,7 @@ const legacyDatabasePath = path.join(__dirname, 'users.json');
 
 if (!fs.existsSync(databasePath) && fs.existsSync(legacyDatabasePath)) {
   fs.copyFileSync(legacyDatabasePath, databasePath, fs.constants.COPYFILE_EXCL);
-  console.log("✅ Existing Scorelytics user data was migrated to the secure data folder.");
+  console.log("✅ Existing Learnova user data was migrated to the secure data folder.");
 }
 
 const adapter = new JSONFile(databasePath);
@@ -47,12 +47,24 @@ if (fs.existsSync(path.join(__dirname, "src", "src", "index.html"))) {
     finalSrcPath = path.join(__dirname, "src", "src");
 }
 
-console.log("🎯 Scorelytics is reading frontend files from:", finalSrcPath);
+console.log("🎯 Learnova is reading frontend files from:", finalSrcPath);
 
 app.use(express.static(finalSrcPath));
+for (const [legacyName, currentName] of Object.entries({
+  "Scorelytics.css": "Learnova.css",
+  "Scorelytics_login.css": "Learnova_login.css",
+  "Scorelytics_login.html": "Learnova_login.html",
+  "Scorelytics_login.js": "Learnova_login.js"
+})) {
+  app.get(`/${legacyName}`, (req, res, next) => {
+    res.sendFile(path.join(finalSrcPath, currentName), error => {
+      if (error && !res.headersSent) next(error);
+    });
+  });
+}
 app.get("/:filename", (req, res, next) => {
   const filename = req.params.filename;
-  if (!/^Scorelytics_Study_Plan_.+\.pdf$/i.test(filename) || path.basename(filename) !== filename) {
+  if (!/^(?:Learnova|Scorelytics)_Study_Plan_.+\.pdf$/i.test(filename) || path.basename(filename) !== filename) {
     return next();
   }
   res.download(path.join(dataDirectory, filename), filename, error => {
@@ -85,7 +97,7 @@ async function geocodeLocation(req, res) {
     const response = await fetch(geocodingUrl, {
       headers: {
         "Accept": "application/json",
-        "User-Agent": "Scorelytics/2.0 (location search)"
+        "User-Agent": "Learnova/1.0 (location search)"
       }
     });
     if (!response.ok) {
@@ -133,7 +145,7 @@ app.get("/", (req, res) => {
 
 // Login Page Route
 app.get("/login", (req, res) => {
-  res.sendFile(path.join(finalSrcPath, "Scorelytics_login.html"));
+  res.sendFile(path.join(finalSrcPath, "Learnova_login.html"));
 });
 
 // ==========================================================================

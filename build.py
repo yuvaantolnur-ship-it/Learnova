@@ -4,13 +4,13 @@ import subprocess
 import sys
 import shutil
 
-def build_scorelytics():
-    print("🚀 Starting single-command PySide6 build pipeline for Scorelytics...")
+def build_learnova():
+    print("🚀 Starting single-command PySide6 build pipeline for Learnova...")
 
     # 1. Force release any lingering background locks on ports or directories
     if os.name == 'nt':
         subprocess.run("taskkill /f /im node.exe", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
-        subprocess.run("taskkill /f /im Scorelytics.exe", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
+        subprocess.run("taskkill /f /im Learnova.exe", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
 
     # 2. Clean up old workspace build directories safely
     print("🧹 Cleaning old build folders...")
@@ -28,24 +28,24 @@ def build_scorelytics():
         "--noconsole",
         "--noconfirm",
         "--clean",
-        "--name=Scorelytics",
+        "--name=Learnova",
         "--add-data=studybot.py;.",
         "--add-data=generate_pdf.py;.",
         "--add-data=parser.py;.",
         "--add-data=Server.py;.",
         "--add-data=schedule_planner.py;.",
-        "--add-data=Scorelytics_server.js;.",
+        "--add-data=Learnova_server.js;.",
         "--add-data=users.json;.",
         "--add-data=index.html;.",
-        "--add-data=Scorelytics_login.html;.",
-        "--add-data=Scorelytics_login.js;.",
+        "--add-data=Learnova_login.html;.",
+        "--add-data=Learnova_login.js;.",
         "--add-data=studybot.js;.",
         "--add-data=auth.js;.",
         "--add-data=scanner.js;.",
         "--add-data=Tests.js;.",  
         "--add-data=ui.js;.",
-        "--add-data=Scorelytics.css;.",
-        "--add-data=Scorelytics_login.css;.",
+        "--add-data=Learnova.css;.",
+        "--add-data=Learnova_login.css;.",
         "main.py"
     ]
     
@@ -63,25 +63,25 @@ def build_scorelytics():
     
     iss_content = f"""
 [Setup]
-AppName=Scorelytics
+AppName=Learnova
 AppVersion=2.0
-DefaultDirName={{autopf}}\\Scorelytics
-DefaultGroupName=Scorelytics
-UninstallDisplayIcon={{app}}\\Scorelytics.exe
+DefaultDirName={{autopf}}\\Learnova
+DefaultGroupName=Learnova
+UninstallDisplayIcon={{app}}\\Learnova.exe
 Compression=lzma2
 SolidCompression=yes
 OutputDir={current_dir}
-OutputBaseFilename=Scorelytics_Setup
+OutputBaseFilename=Learnova_Setup
 
 [Files]
-Source: "{current_dir}\\dist\\Scorelytics\\*"; DestDir: "{{app}}"; Flags: recursesubdirs createallsubdirs
+Source: "{current_dir}\\dist\\Learnova\\*"; DestDir: "{{app}}"; Flags: recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{{group}}\\Scorelytics"; Filename: "{{app}}\\Scorelytics.exe"
-Name: "{{autodesktop}}\\Scorelytics"; Filename: "{{app}}\\Scorelytics.exe"
+Name: "{{group}}\\Learnova"; Filename: "{{app}}\\Learnova.exe"
+Name: "{{autodesktop}}\\Learnova"; Filename: "{{app}}\\Learnova.exe"
 
 [Run]
-Filename: "{{app}}\\Scorelytics.exe"; Description: "Launch Scorelytics"; Flags: nowait postinstall skipifsilent
+Filename: "{{app}}\\Learnova.exe"; Description: "Launch Learnova"; Flags: nowait postinstall skipifsilent
 """
     
     with open("installer.iss", "w", encoding='utf-8') as f:
@@ -112,7 +112,7 @@ Filename: "{{app}}\\Scorelytics.exe"; Description: "Launch Scorelytics"; Flags: 
     if os.path.exists("installer.iss"):
         os.remove("installer.iss")
 
-    print("\n🎉 Success! Your installable file 'Scorelytics_Setup.exe' is officially ready in your folder root.")
+    print("\n🎉 Success! Your installable file 'Learnova_Setup.exe' is officially ready in your folder root.")
 
 if __name__ == "__main__":
-    build_scorelytics()
+    build_learnova()

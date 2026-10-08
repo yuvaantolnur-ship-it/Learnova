@@ -1,5 +1,5 @@
 // ==========================================================================
-// STUDYBOT.JS - Scorelytics V2 PySide6 NATIVE AI INTEGRATION
+// STUDYBOT.JS - Learnova PySide6 NATIVE AI INTEGRATION
 // ==========================================================================
 let chatMsgWindow = null; 
 let chatSessions = [];
@@ -33,7 +33,7 @@ function loadChatHistory() {
         } else {
             chatMsgWindow.innerHTML = `
                 <div style="background: #161b26; border: 1px solid #242c3d; color: #a0aec0; padding: 12px 16px; border-radius: 8px; font-size: 13px; text-align: center;">
-                    ✨ Welcome to Scorelytics StudyBot! Mention a subject track to analyze performance curves or generate study calendars.
+                    ✨ Welcome to Learnova StudyBot! Mention a subject to review performance or build a study calendar.
                 </div>
             `;
         }
@@ -208,7 +208,7 @@ function startNewCloudChat() {
 
 async function deleteCloudChat() {
     if (!activeChatSessionId || cloudChatBusy) return;
-    if (!window.confirm("Delete this chat and its saved messages from your Scorelytics account?")) return;
+    if (!window.confirm("Delete this chat and its saved messages from your Learnova account?")) return;
 
     const sessionId = activeChatSessionId;
     const button = document.getElementById("deleteChatBtn");

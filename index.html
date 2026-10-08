@@ -1,6 +1,6 @@
 <head>
     <meta charset="UTF-8">
-    <title>Scorelytics Advanced Hub</title>
+    <title>Learnova | Student Dashboard</title>
     <script src="/runtime-config.js"></script>
     <script src="/api-client.js"></script>
     
@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
     <!-- Project Stylesheets Layout Paths -->
-    <link rel="stylesheet" type="text/css" href="Scorelytics.css">
+    <link rel="stylesheet" type="text/css" href="Learnova.css">
 </head>
 <body>
      <!-- ==========================================================================
@@ -32,7 +32,7 @@
 
     <!-- NAVIGATION SIDEBAR CONTROL PANEL -->
     <div class="sidebar">
-      <div class="logo"><span>Score</span>Lytics</div>
+      <div class="logo"><span>Learn</span>ova</div>
       <p id="welcome" style="padding: 10px 15px; font-size: 13px; opacity: 0.8; color: #60a5fa; margin: 0;"></p>
       
       <!-- Tab Control Shortcuts Map Triggered by showTab Loops -->
@@ -210,16 +210,16 @@
           <div style="margin-top: 20px; display: flex; justify-content: center; gap: 15px;">
             <button type="button" id="cameraBtn" style="background: #374151; color: white; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;">Power Camera Hardware</button>
             <button type="button" onclick="captureAndParseScore()" style="background: #2563eb; color: white; padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;">Force Manual Snapshot Capture</button>
-            <button type="button" onclick="stopScorelyticsCamera()" style="background: #7f1d1d; color: #fca5a5; padding: 10px 16px; border-radius: 8px; border: 1px solid #991b1b; cursor: pointer;">Cut Stream</button>
+            <button type="button" onclick="stopLearnovaCamera()" style="background: #7f1d1d; color: #fca5a5; padding: 10px 16px; border-radius: 8px; border: 1px solid #991b1b; cursor: pointer;">Cut Stream</button>
           </div>
         </div>
       </div>
 
       <!-- 6️⃣ AI STUDYBOT ASSISTANT PORTAL -->
       <div id="studybot" class="tab">
-        <h2>Scorelytics AI StudyBot Assistant</h2>
+        <h2>Learnova AI StudyBot Assistant</h2>
         <div class="card" style="display: flex; flex-direction: column; height: 480px; width: 100%;">
-          <p id="aiPrivacyNotice" style="display:none; color:#fbbf24; font-size:12px;">Hosted chats are saved to your Scorelytics account so you can continue on another device. StudyBot also sends chat context and recent test results to its configured AI provider. Deleting a chat removes it from Scorelytics, but cannot delete data already processed by the AI provider.</p>
+          <p id="aiPrivacyNotice" style="display:none; color:#fbbf24; font-size:12px;">Hosted chats are saved to your Learnova account so you can continue on another device. StudyBot also sends chat context and recent test results to its configured AI provider. Deleting a chat removes the Learnova copy, but cannot delete data already processed by the AI provider.</p>
           <div id="chatSessionControls" style="display:none; gap:8px; margin-bottom:10px;">
             <select id="chatSessionSelect" aria-label="Saved StudyBot chats" style="flex:1; margin:0;"></select>
             <button type="button" id="newChatBtn">New chat</button>

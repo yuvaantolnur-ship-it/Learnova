@@ -39,7 +39,7 @@
       localStorage.setItem("scorelytics_refresh_token", session.refresh_token);
       return true;
     } catch (error) {
-      console.error("Could not refresh the Scorelytics sign-in:", error);
+      console.error("Could not refresh the Learnova sign-in:", error);
       return false;
     }
   }

@@ -18,7 +18,7 @@ def start_express_backend():
     global express_process, backend_log
     print("🚀 Launching Core Express Server instance on background pipeline threads...")
     resource_dir = os.path.dirname(os.path.abspath(__file__))
-    server_path = os.path.join(resource_dir, "Scorelytics_server.js")
+    server_path = os.path.join(resource_dir, "Learnova_server.js")
     bundled_node = os.path.join(resource_dir, "node.exe")
     node_path = bundled_node if os.path.isfile(bundled_node) else shutil.which("node")
 
@@ -48,7 +48,7 @@ def start_express_backend():
             )
         try:
             with urllib.request.urlopen("http://127.0.0.1:8000/login", timeout=1) as response:
-                if response.status == 200 and b"Login - Scorelytics" in response.read():
+                if response.status == 200 and b"Login - Learnova" in response.read():
                     return
         except (urllib.error.URLError, TimeoutError):
             pass
@@ -64,13 +64,13 @@ def main():
     try:
         start_express_backend()
     except (OSError, RuntimeError) as error:
-        QMessageBox.critical(None, "Scorelytics startup failed", str(error))
+        QMessageBox.critical(None, "Learnova startup failed", str(error))
         if backend_log:
             backend_log.close()
         sys.exit(1)
 
     window = QMainWindow()
-    window.setWindowTitle("Scorelytics Dashboard Platform")
+    window.setWindowTitle("Learnova Dashboard")
     window.resize(1280, 850)
 
     # ==========================================================================
@@ -98,11 +98,11 @@ def main():
     def handle_download_requested(download):
         file_name = os.path.basename(download.downloadFileName() or download.suggestedFileName())
         if not file_name:
-            file_name = "Scorelytics_Report.pdf"
+            file_name = "Learnova_Report.pdf"
         default_path = os.path.join(os.path.expanduser("~"), "Downloads", file_name)
         save_path, _ = QFileDialog.getSaveFileName(
             window,
-            "Save Scorelytics download",
+            "Save Learnova download",
             default_path,
             "PDF files (*.pdf);;All files (*)"
         )
@@ -130,8 +130,8 @@ def main():
         if is_local_app and feature == QWebEnginePage.Feature.MediaVideoCapture:
             answer = QMessageBox.question(
                 window,
-                "Scorelytics camera access",
-                "Allow Scorelytics to use your camera for the Scanner feature?",
+                "Learnova camera access",
+                "Allow Learnova to use your camera for the Scanner feature?",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                 QMessageBox.StandardButton.No
             )
@@ -206,7 +206,7 @@ def main():
             }
         }
     };
-    console.log("🔒 Scorelytics JavaScript Bridging Channels Engaged Successfully.");
+    console.log("🔒 Learnova JavaScript bridging channels engaged successfully.");
     
     // Smart Execution Check: Only run boot routines when page transitions into main dashboard layouts
     if (window.location.href.includes("index.html") || document.getElementById("schoolMap")) {
@@ -229,7 +229,7 @@ def main():
     developer_shortcut.activated.connect(lambda: web_view.page().setDevToolsPage(QWebEngineView()))
     
     # Route target view frames directly into your running local Express app instance
-    web_view.load(QUrl("http://localhost:8000/Scorelytics_login.html"))
+    web_view.load(QUrl("http://localhost:8000/Learnova_login.html"))
     window.setCentralWidget(web_view)
     
     window.show()

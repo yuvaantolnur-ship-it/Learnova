@@ -1,5 +1,5 @@
 // ======================================
-// TESTS.JS - Scorelytics V2 (Cleaned 1.2.1)
+// TESTS.JS - Learnova (Cleaned 1.2.1)
 // ======================================
 let allTests = [];
 let currentTests = [];

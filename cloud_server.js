@@ -7,14 +7,14 @@ const { execFile } = require("child_process");
 
 const app = express();
 const port = Number(process.env.PORT) || 10000;
-const supabaseUrl = process.env.SUPABASE_URL?.replace(/\/+$/, "");
+const supabaseUrl = process.env.SUPABASE_URL?.replace(/\/+$/, "") || "https://fqazplfrjgapvcwqcacr.supabase.co";
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 const frontendDirectory = __dirname;
 const publicFrontendFiles = new Set([
-  "Scorelytics.css",
-  "Scorelytics_login.css",
-  "Scorelytics_login.html",
-  "Scorelytics_login.js",
+  "Learnova.css",
+  "Learnova_login.css",
+  "Learnova_login.html",
+  "Learnova_login.js",
   "Tests.js",
   "analytics.js",
   "api-client.js",
@@ -26,6 +26,12 @@ const publicFrontendFiles = new Set([
   "scanner.js",
   "studybot.js",
   "ui.js"
+]);
+const legacyFrontendAliases = new Map([
+  ["Scorelytics.css", "Learnova.css"],
+  ["Scorelytics_login.css", "Learnova_login.css"],
+  ["Scorelytics_login.html", "Learnova_login.html"],
+  ["Scorelytics_login.js", "Learnova_login.js"]
 ]);
 const dataDirectory = process.env.SCORELYTICS_DATA_DIR || path.join(os.tmpdir(), "scorelytics");
 const allowedOrigins = new Set(
@@ -96,12 +102,13 @@ app.get("/api/health", (req, res) => {
 });
 
 app.get("/", (req, res) => res.sendFile(path.join(frontendDirectory, "index.html")));
-app.get("/login", (req, res) => res.sendFile(path.join(frontendDirectory, "Scorelytics_login.html")));
+app.get("/login", (req, res) => res.sendFile(path.join(frontendDirectory, "Learnova_login.html")));
 app.get("/:filename", (req, res, next) => {
-  if (!publicFrontendFiles.has(req.params.filename) || req.params.filename === "runtime-config.js") {
+  const filename = legacyFrontendAliases.get(req.params.filename) || req.params.filename;
+  if ((!publicFrontendFiles.has(filename) && !legacyFrontendAliases.has(req.params.filename)) || filename === "runtime-config.js") {
     return next();
   }
-  res.sendFile(path.join(frontendDirectory, req.params.filename), error => {
+  res.sendFile(path.join(frontendDirectory, filename), error => {
     if (error && !res.headersSent) next(error);
   });
 });
@@ -463,7 +470,7 @@ async function geocodeLocation(req, res, next) {
     const url = new URL("https://nominatim.openstreetmap.org/search");
     url.search = new URLSearchParams({ format: "jsonv2", q: query, limit: "1" }).toString();
     const response = await fetch(url, {
-      headers: { Accept: "application/json", "User-Agent": "Scorelytics/2.0 (location search)" }
+      headers: { Accept: "application/json", "User-Agent": "Learnova/1.0 (location search)" }
     });
     if (!response.ok) {
       throw new ApiError(502, "The geocoding service could not complete the search.");
@@ -787,7 +794,7 @@ app.post("/api/auto-upload", requireUser, limitUserRequests(40, 60_000), async (
 app.post("/api/export-pdf", requireUser, limitUserRequests(5, 60_000), async (req, res, next) => {
   try {
     const tests = await getTestResults(req.authUser, req.authToken);
-    const filename = `Scorelytics_Study_Plan_${req.authUser.id}.pdf`;
+    const filename = `Learnova_Study_Plan_${req.authUser.id}.pdf`;
     execFile(
       process.env.SCORELYTICS_PYTHON || (process.platform === "win32" ? "python" : "python3"),
       [path.join(__dirname, "Generate_pdf.py"), req.authUser.id, JSON.stringify(tests)],
@@ -820,11 +827,14 @@ app.post("/api/export-pdf", requireUser, limitUserRequests(5, 60_000), async (re
 });
 
 app.get("/api/download-pdf/:filename", requireUser, (req, res, next) => {
-  const expectedFilename = `Scorelytics_Study_Plan_${req.authUser.id}.pdf`;
-  if (req.params.filename !== expectedFilename) {
+  const allowedFilenames = new Set([
+    `Learnova_Study_Plan_${req.authUser.id}.pdf`,
+    `Scorelytics_Study_Plan_${req.authUser.id}.pdf`
+  ]);
+  if (!allowedFilenames.has(req.params.filename)) {
     return res.status(404).json({ error: "The requested report was not found." });
   }
-  res.download(path.join(dataDirectory, expectedFilename), expectedFilename, error => {
+  res.download(path.join(dataDirectory, req.params.filename), req.params.filename, error => {
     if (error && !res.headersSent) next(error);
   });
 });
@@ -835,9 +845,9 @@ app.use((error, req, res, next) => {
     return res.status(error.status).json({ error: error.message });
   }
   console.error("Cloud API request failed:", error);
-  res.status(500).json({ error: "The Scorelytics service could not complete the request." });
+  res.status(500).json({ error: "The Learnova service could not complete the request." });
 });
 
 app.listen(port, "0.0.0.0", () => {
-  console.log(`Scorelytics hosted API listening on port ${port}.`);
+  console.log(`Learnova hosted API listening on port ${port}.`);
 });

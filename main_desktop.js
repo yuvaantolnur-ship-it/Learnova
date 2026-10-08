@@ -9,7 +9,7 @@ const desktopConfig = fs.existsSync(configPath)
   : {};
 const appUrl = process.env.SCORELYTICS_PUBLIC_API_URL
   || desktopConfig.apiBaseUrl
-  || "https://scorelytics-api.onrender.com";
+  || "https://scorelytics-app.onrender.com";
 const parsedAppUrl = new URL(appUrl);
 if (
   !["https:", "http:"].includes(parsedAppUrl.protocol) ||
@@ -53,7 +53,7 @@ function createWindow() {
     height: 880,
     minWidth: 760,
     minHeight: 600,
-    title: "Scorelytics",
+    title: "Learnova",
     autoHideMenuBar: true,
     webPreferences: {
       contextIsolation: true,
@@ -72,10 +72,10 @@ function createWindow() {
   });
 
   window.loadURL(appUrl).catch(error => {
-    console.error("Could not load the Scorelytics hosted app:", error);
+    console.error("Could not load the Learnova hosted app:", error);
     dialog.showErrorBox(
-      "Scorelytics could not connect",
-      "Check your internet connection and confirm the hosted Scorelytics service is deployed."
+      "Learnova could not connect",
+      "Check your internet connection and confirm the hosted Learnova service is deployed."
     );
   });
 }

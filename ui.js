@@ -1,6 +1,6 @@
 // =====================================
 // UI.JS
-// Scorelytics V2
+// Learnova
 // =====================================
 
 // Remove 'let' so it binds to the variable already created by your other script files
@@ -583,7 +583,7 @@ async function searchGlobalRegion() {
 // ⚙️ RESTORED MASTER UI SYNCHRONIZATION & INITIALIZATION MOTOR
 // ==========================================================================
 window.runSynchronizedBootSequence = function() {
-    console.log("🔒 Scorelytics V2 Native UI Sync Matrix Online.");
+    console.log("🔒 Learnova native UI sync online.");
 
     // 1. Safely bind click event listeners to your sidebar options
     document.querySelectorAll('.sidebar p[id^="tab-"]').forEach(item => {

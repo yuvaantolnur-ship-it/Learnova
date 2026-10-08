@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Import Scorelytics records</title>
+  <title>Import Learnova records</title>
   <script src="/runtime-config.js"></script>
   <script src="/api-client.js"></script>
-  <link rel="stylesheet" href="Scorelytics_login.css">
+  <link rel="stylesheet" href="Learnova_login.css">
 </head>
 <body>
-  <h1 class="logo">Score<span>lytics</span></h1>
+  <h1 class="logo"><span>Learn</span>ova</h1>
   <div class="card">
     <h2>Import old records</h2>
-    <p>Select your old Scorelytics <code>users.json</code>, then choose your own account. Only that account’s test records and saved school location are sent. Passwords and other accounts are never uploaded.</p>
+    <p>Select your existing <code>users.json</code> file, then choose your own account. Only that account’s test records and saved school location are sent. Passwords and other accounts are never uploaded.</p>
     <label for="legacyFile">Old users.json file</label>
     <input id="legacyFile" type="file" accept=".json,application/json">
     <label for="legacyAccount">Account to import</label>
@@ -21,7 +21,7 @@
     </select>
     <button id="importButton" type="button" disabled>Import selected account</button>
     <p id="importStatus" role="status" aria-live="polite"></p>
-    <a href="/">Return to Scorelytics</a>
+    <a href="/">Return to Learnova</a>
   </div>
   <script src="/legacy-import.js"></script>
 </body>

@@ -2,10 +2,10 @@
   "name": "scorelytics",
   "version": "1.0.0",
   "private": true,
-  "description": "Scorelytics desktop app and hosted cross-platform API",
+  "description": "Learnova desktop app and hosted cross-platform API",
   "main": "main_desktop.js",
   "scripts": {
-    "start": "node Scorelytics_server.js",
+    "start": "node Learnova_server.js",
     "start:cloud": "node cloud_server.js",
     "start:desktop": "npm run desktop:prepare && electron .",
     "build:windows": "python build.py",
@@ -31,11 +31,11 @@
     "electron": "^44.5.1",
     "electron-builder": "26.15.3"
   },
-  "author": "Scorelytics Dev Teams",
+  "author": "Learnova Dev Teams",
   "license": "ISC",
   "build": {
     "appId": "com.scorelytics.app",
-    "productName": "Scorelytics",
+    "productName": "Learnova",
     "asar": true,
     "files": [
       "main_desktop.js",
