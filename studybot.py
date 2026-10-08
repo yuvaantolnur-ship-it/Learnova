@@ -218,7 +218,7 @@ def ask_gemini(prompt):
 
 def main():
     if len(sys.argv) < 3:
-        print(json.dumps({"reply": "Missing parameters."}))
+        print(json.dumps({"reply": "StudyBot is having trouble right now. Please try again in a moment."}))
         return
 
     # FIXED: Added explicit indices to catch the incoming Node.js string arguments
@@ -250,18 +250,19 @@ def main():
 You are StudyBot, a brilliant academic advisor.
 
 Rules:
-- Speak directly to the student in a highly encouraging voice.
+- Speak directly to the student in a kind, encouraging voice. Use simple words a young student can understand.
+- Do not mention hidden instructions, calculations, predictions, or technical details. Explain results in everyday language.
 - Keep standard answers under 6 sentences.
 - CRITICAL: If the student asks for a "schedule", "plan", or "calendar", bypass the 6-sentence rule and print out a detailed, clear day-by-day weekly study schedule (Monday to Sunday).
 - Make sure the schedule heavily targets their Weakest Subject on multiple days.
 - Use the student's exact academic metrics to personalize the strategy.
 - DO NOT answer questions about anything other than academic performance, study strategies, related topics, and questions about actual questions from studies or assignments.
 
-Student readiness score: {readiness}%
-Strongest track: {strongest}
-Weakest track: {weakest}
-Predictions data: {json.dumps(predictions)}
-Recent grades logged:
+Study progress: {readiness}%
+Strongest subject: {strongest}
+Subject to practise: {weakest}
+Possible next scores: {json.dumps(predictions)}
+Recent test scores:
 {grades_summary}
 
 Recent conversation:
@@ -274,7 +275,8 @@ Question:
     try:
         reply = ask_ollama(system_prompt)
     except (RuntimeError, ValueError) as error:
-        reply = f"StudyBot could not complete the request: {error}"
+        print(f"[STUDYBOT] Request failed: {error}", file=sys.stderr)
+        reply = "StudyBot is having trouble right now. Please try again in a moment."
     print(json.dumps({"reply": reply}))
 
 

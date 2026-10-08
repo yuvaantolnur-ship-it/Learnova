@@ -42,7 +42,7 @@
       <p id="tab-analytics" onclick="showTab('analytics', event)">📊 Analytics</p>
       <p id="tab-scanner" onclick="showTab('scanner', event)">📸 Scanner</p>
       <p id="tab-studybot" onclick="showTab('studybot', event)">🤖 StudyBot</p>
-      <p id="tab-pdf_report" onclick="showTab('pdf_report', event)">📄 Export PDF</p>
+      <p id="tab-pdf_report" onclick="showTab('pdf_report', event)">📄 Study Plan</p>
       <a id="legacyImportLink" href="/legacy-import.html" style="display:none; color:#93c5fd; padding:10px 15px; font-size:13px;">Import old records</a>
       
       <p id="logoutBtn" style="color: #ef4444; margin-top: auto;">🚪 Logout</p>
@@ -53,42 +53,42 @@
 
       <!-- 1️⃣ SYSTEM OVERVIEW METRICS VIEWPORT -->
       <div id="overview" class="tab active">
-        <h2>System Performance Matrix</h2>
+        <h2>Your Progress</h2>
         <div class="card-grid">
           <div class="card mini">
-            <h3>Total Tests Logged</h3>
+            <h3>Tests Taken</h3>
             <p id="totalTests">0</p>
           </div>
           <div class="card mini">
-            <h3>Latest Test Return</h3>
+            <h3>Latest Score</h3>
             <p id="latestScore">-</p>
           </div>
           <div class="card mini">
-            <h3>Stability Tracking Index</h3>
+            <h3>Score Consistency</h3>
             <p id="consistency">-</p>
           </div>
         </div>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;">
           <div class="card">
-            <h3>Running Mean Average</h3>
-            <p id="average" style="font-size: 32px; font-weight: bold; color: #3b82f6; margin: 10px 0;">No Data</p>
+            <h3>Overall Average</h3>
+            <p id="average" style="font-size: 32px; font-weight: bold; color: #3b82f6; margin: 10px 0;">Take a test to see your average</p>
           </div>
           <div class="card">
-            <h3>Performance Parameter Profile</h3>
+            <h3>How You’re Doing</h3>
             <p id="performance" style="font-size: 24px; font-weight: bold; margin: 10px 0;">-</p>
           </div>
         </div>
 
         <div class="card" style="width: 100%;">
-          <h3>🧠 Multi-Point Performance Insights</h3>
-          <div id="insight" style="padding: 10px 0; line-height: 1.6; color: #9ca3af;">Add more tests to see metrics tracks calculate...</div>
+          <h3>🧠 Your Study Insights</h3>
+          <div id="insight" style="padding: 10px 0; line-height: 1.6; color: #9ca3af;">Add a few test scores to see how you’re improving.</div>
         </div>
       </div>
 
       <!-- 2️⃣ STUDENT PROFILE MANAGE CONSOLE VIEWPORT -->
       <div id="profile" class="tab">
-        <h2>Student Account Configuration</h2>
+        <h2>Your Profile</h2>
         <div class="card profile-card">
           <div class="profile-header">
             <img id="profilePic" src="data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='70' height='70' viewBox='0 0 70 70'><circle cx='35' cy='35' r='35' fill='%23374151'/></svg>">
@@ -102,15 +102,15 @@
           
           <div class="stats">
             <div>
-              <h3>Logged Records</h3>
+              <h3>Tests Taken</h3>
               <p id="profileTests">0</p>
             </div>
             <div>
-              <h3>Cumulative Mean</h3>
+              <h3>Overall Average</h3>
               <p id="profileAverage">-</p>
             </div>
             <div>
-              <h3>Variance Index</h3>
+              <h3>Score Consistency</h3>
               <p id="profileConsistency">-</p>
             </div>
           </div>
@@ -118,14 +118,14 @@
 
         <!-- System Security Profile Form -->
         <form class="password-section card">
-          <h3>🔒 Security Profile Calibration</h3>
-          <input type="password" id="newPassword" placeholder="Enter New Security Password">
-          <button type="submit">Update Credentials</button>
+          <h3>🔒 Change Password</h3>
+          <input type="password" id="newPassword" placeholder="Enter a new password">
+          <button type="submit">Save Password</button>
         </form>
 
         <section class="card profile-theme-section" aria-labelledby="themeSectionTitle">
-          <h3 id="themeSectionTitle">🎨 Application Interface Theme</h3>
-          <p>Choose a visual theme for this profile on this device.</p>
+          <h3 id="themeSectionTitle">🎨 Choose a Theme</h3>
+          <p>Pick the colors you like best.</p>
           <label for="themeSelector">Color theme</label>
           <select id="themeSelector" onchange="window.changeAppTheme()">
             <option value="midnight">🌌 Midnight Slate</option>
@@ -136,26 +136,26 @@
 
         <!-- Global Campus Pin Drop Map Framework -->
         <div class="card profile-card">
-          <h3 style="color: #60a5fa; margin-bottom: 4px;">🌍 Global Campus Coordinates</h3>
-          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">Locate your school anywhere across the world map grid.</p>
+          <h3 style="color: #60a5fa; margin-bottom: 4px;">🌍 Your School</h3>
+          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">Find your school on the map.</p>
           
           <!-- Hidden input block anchors ui.js logic variables cleanly -->
           <input type="hidden" id="regionSelect" value="Global">
           
           <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-            <input type="text" id="globalRegionInput" placeholder="Search City/Region globally..." style="margin: 0; flex: 1; padding: 12px; border-radius: 10px; background: #111827; border: 1px solid #374151; color: white;">
+            <input type="text" id="globalRegionInput" placeholder="Search for a town or city..." style="margin: 0; flex: 1; padding: 12px; border-radius: 10px; background: #111827; border: 1px solid #374151; color: white;">
             <button type="button" onclick="searchGlobalRegion()" style="padding: 0 16px; background: #374151; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">🔍 Search</button>
           </div>
-          <input type="text" id="schoolNameInput" placeholder="Enter School or Institution Name" style="margin: 0 0 15px 0;">
+          <input type="text" id="schoolNameInput" placeholder="Enter your school name" style="margin: 0 0 15px 0;">
           <div id="schoolMap" style="height: 280px; width: 100%; border-radius: 12px; border: 2px solid #374151; background: #020617; z-index: 1;"></div>
-          <button type="button" id="saveLocationBtn" style="margin-top: 15px; width: 100%; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold;">Save Global Location Profile</button>
+          <button type="button" id="saveLocationBtn" style="margin-top: 15px; width: 100%; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold;">Save School</button>
         </div>
       </div>
 
       <!-- 3️⃣ ACADEMIC TESTS DATA ENTRIES LEDGER -->
       <div id="tests" class="tab">
         <div class="card">
-          <h3>➕ Log New Test Entry Parameters</h3>
+          <h3>➕ Add a Test Score</h3>
           <form id="testForm">
             <input type="text" id="subject" placeholder="Subject Name" required>
             <input type="number" id="score" placeholder="Score Obtained" required>
@@ -165,9 +165,9 @@
         </div>
         
         <div class="card" style="max-width: 100%;">
-          <h3>📋 Loaded Database Metrics</h3>
+          <h3>📋 Your Test Scores</h3>
           <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0; gap: 10px;">
-            <input type="text" id="searchTests" placeholder="Filter parameters by subject...">
+            <input type="text" id="searchTests" placeholder="Search by subject...">
             <span id="searchCount" style="opacity: 0.6; font-size: 13px;"></span>
           </div>
           <ul id="testList" style="list-style: none; padding:0; margin:0;">
@@ -178,20 +178,20 @@
 
       <!-- 4️⃣ VISUALIZATION DATA ENGINE VIEWPORT -->
       <div id="analytics" class="tab">
-        <h2>Analytics Engine Canvas</h2>
+        <h2>Your Progress</h2>
         <div class="card" style="width: 100%;">
-          <h3>📈 Progression Trend Vector</h3>
-          <div id="emptyState" style="display: none; padding: 20px; text-align: center; opacity: 0.6;">No data tracks inside system memory file loops.</div>
+          <h3>📈 Your Scores Over Time</h3>
+          <div id="emptyState" style="display: none; padding: 20px; text-align: center; opacity: 0.6;">Add a test score to see your progress.</div>
           <canvas id="chart" style="width: 100%; max-height: 280px;"></canvas>
         </div>
         
         <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: start; width: 100%;">
           <div class="card">
-            <h3>📊 Subject-wise Velocity Performance Curves</h3>
+            <h3>📊 Scores by Subject</h3>
             <div id="subjectCharts"></div>
           </div>
           <div class="card">
-            <h3>🏆 Efficiency Rank List Stack</h3>
+            <h3>🏆 Your Strongest Subjects</h3>
             <div id="subjectRanking"></div>
           </div>
         </div>
@@ -199,14 +199,14 @@
 
       <!-- 5️⃣ SMART VISION OCR DOCUMENT VIEWPORT -->
       <div id="scanner" class="tab">
-        <h2>📸 Computer Vision OCR Document Scanner</h2>
+        <h2>📸 Scan a Test Score</h2>
         <div class="card" style="text-align: center; width: 100%;">
-          <p style="opacity: 0.7; margin-bottom: 15px;">Show the score and total clearly, fill most of the frame, avoid glare, then capture. The preview matches the image sent for recognition.</p>
+          <p style="opacity: 0.7; margin-bottom: 15px;">Show your score clearly, move closer, and tap Capture Page. You can enter the score yourself if it can’t be read.</p>
           <div class="camera-container-deck" style="display: inline-block;">
             <video id="webcamView" autoplay playsinline style="width: 100%; max-width: 720px; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: #000; display: block;"></video>
           </div>
           <canvas id="captureCanvas" style="display: none;"></canvas>
-          <div id="scannerStatus" style="margin-top: 15px; font-weight: bold; color: #f59e0b;">Camera Starting...</div>
+          <div id="scannerStatus" style="margin-top: 15px; font-weight: bold; color: #f59e0b;">Starting camera...</div>
           <div style="margin-top: 20px; display: flex; justify-content: center; gap: 15px;">
             <button type="button" id="cameraBtn" style="background: #374151; color: white; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;">Start Camera</button>
             <button type="button" onclick="captureAndParseScore()" style="background: #2563eb; color: white; padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;">Capture Page</button>
@@ -217,9 +217,9 @@
 
       <!-- 6️⃣ AI STUDYBOT ASSISTANT PORTAL -->
       <div id="studybot" class="tab">
-        <h2>Learnova AI StudyBot Assistant</h2>
+        <h2>StudyBot</h2>
         <div class="card" style="display: flex; flex-direction: column; height: 480px; width: 100%;">
-          <p id="aiPrivacyNotice" style="display:none; color:#fbbf24; font-size:12px;">Hosted chats are saved to your Learnova account so you can continue on another device. StudyBot also sends chat context and recent test results to its configured AI provider. Deleting a chat removes the Learnova copy, but cannot delete data already processed by the AI provider.</p>
+          <p id="aiPrivacyNotice" style="display:none; color:#fbbf24; font-size:12px;">Your chats are saved to your Learnova account so you can continue on another device. Recent test scores and messages may be shared with AI to answer your questions.</p>
           <div id="chatSessionControls" style="display:none; gap:8px; margin-bottom:10px;">
             <select id="chatSessionSelect" aria-label="Saved StudyBot chats" style="flex:1; margin:0;"></select>
             <button type="button" id="newChatBtn">New chat</button>
@@ -228,21 +228,21 @@
           <div id="chatMessages" style="flex: 1; overflow-y: auto; background: #111827; border: 1px solid #374151; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; gap: 10px;">
           </div>
           <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <input type="text" id="chatInput" placeholder="Ask about weak performances, schedule pacing, score deltas..." style="margin:0;">
-            <button type="button" id="sendChatBtn" style="background: #2563eb; color: white; padding: 0 24px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer;">Transmit</button>
+            <input type="text" id="chatInput" placeholder="Ask for help with a subject or homework..." style="margin:0;">
+            <button type="button" id="sendChatBtn" style="background: #2563eb; color: white; padding: 0 24px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer;">Send</button>
           </div>
         </div>
       </div>
 
       <!-- 7️⃣ PDF EXPORT COMPILER VIEWPORT -->
       <div id="pdf_report" class="tab">
-        <h2>Report Compiler Engine</h2>
+        <h2>Your Study Plan</h2>
         <div class="card" style="text-align: center; padding: 50px 20px; width: 100%;">
           <p style="color: #9ca3af; max-width: 600px; margin: 0 auto 25px auto; line-height: 1.6;">
-            The framework will translate local lowdb data storage slots into serialized matrix streams, ordering your lower scored subjects to high priority targets before compiling with ReportLab frameworks.
+            Get a clear report of your test scores, strongest subjects, and a simple study plan to help you improve.
           </p>
           <button type="button" onclick="triggerPDFReportCompilation()" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; padding: 16px 36px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.25);">
-            🚀 Compile Custom Revision Plan PDF
+            📄 Download My Study Plan
           </button>
           <div id="pdfStatusFeedback" style="margin-top: 20px; font-weight: bold;"></div>
         </div>
@@ -254,8 +254,8 @@
   <!-- MODAL WINDOW OVERLAYS -->
   <div id="deleteModal" class="modal">
     <div class="modal-content">
-      <h3>Remove Record Slot?</h3>
-      <p style="opacity: 0.7; font-size: 13px;">This updates lowdb memory structures immediately.</p>
+      <h3>Delete This Test?</h3>
+      <p style="opacity: 0.7; font-size: 13px;">This test score will be removed.</p>
       <div class="modal-actions">
         <button type="button" id="confirmDeleteBtn" class="danger-btn" style="padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; border:none;">Delete</button>
         <button type="button" id="cancelDeleteBtn" style="padding: 8px 16px; border-radius: 6px; cursor: pointer; border:none; background:#374151; color:white;">Cancel</button>

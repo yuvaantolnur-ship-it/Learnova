@@ -60,7 +60,7 @@ async function addTest(event) {
     const total = Number(totalEl.value);
 
     if (!subject || total <= 0 || score < 0 || score > total) {
-        showToast("Invalid score configurations ❌", "error");
+        showToast("Check that the score is not more than the total.", "error");
         return;
     }
 
@@ -75,14 +75,14 @@ async function addTest(event) {
         const data = await response.json();
         if (data.success) {
             document.getElementById("testForm").reset();
-            showToast("Test logged successfully ✅", "success");
+            showToast("Test score saved ✅", "success");
             await loadTests();
         } else {
-            showToast("Failed to write test slot ❌", "error");
+            showToast("Could not add this test. Please try again.", "error");
         }
     } catch (error) {
         console.error(error);
-        showToast("Server Connection Error ❌", "error");
+        showToast("Could not connect. Please try again.", "error");
     }
 }
 
@@ -155,7 +155,7 @@ async function executeDirectSaveUpdate(index, subject, score, total, date) {
         });
         const data = await res.json();
         if (data.success) {
-            if (typeof showToast === "function") showToast("Test database synchronized! ✏️", "edit");
+            if (typeof showToast === "function") showToast("Test score updated.", "edit");
             window.closeEdit();
             if (typeof loadTests === "function") loadTests(); // Rebuilds overview dashboards instantly
         }
@@ -189,7 +189,7 @@ async function saveEdit() {
         }
     } catch (err) {
         console.error(err);
-        showToast("Failed to save changes ❌", "error");
+        showToast("Could not save your changes. Please try again.", "error");
     }
 }
 
@@ -206,12 +206,12 @@ async function deleteTest(i) {
         });
         const data = await res.json();
         if (data.success) {
-            showToast("Test item deleted ❌", "error");
+            showToast("Test score deleted.", "success");
             await loadTests();
         }
     } catch (err) {
         console.error(err);
-        showToast("Failed to delete test ❌", "error");
+        showToast("Could not delete this test. Please try again.", "error");
     }
 }
 
@@ -224,7 +224,7 @@ function renderTests(tests) {
     list.innerHTML = "";
 
     if (!Array.isArray(tests) || tests.length === 0) {
-        list.innerHTML = "<li style='padding: 15px; opacity:0.6;'>🔎 No logged tests matching query metrics found.</li>";
+        list.innerHTML = "<li style='padding: 15px; opacity:0.6;'>🔎 No tests found. Try another search or add a test score.</li>";
         return;
     }
 
@@ -265,7 +265,7 @@ function filterTests() {
 async function triggerPDFReportCompilation() {
     if (!currentUser) return;
     
-    showToast("⚡ Generating Portable Analytics Report...", "edit");
+    showToast("Making your study plan…", "edit");
     
     try {
         const response = await fetch("http://localhost:8000/api/export-pdf", {
@@ -303,7 +303,7 @@ async function triggerPDFReportCompilation() {
         }
     } catch (connectionFault) {
         console.error("PDF export failed:", connectionFault);
-        showToast(connectionFault.message || "Server link lost during processing ❌", "error");
+        showToast("Could not make your study plan. Please try again.", "error");
     }
 }
 

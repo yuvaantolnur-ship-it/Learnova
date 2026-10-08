@@ -6,7 +6,7 @@
   let legacyUsers = [];
 
   if (window.SCORELYTICS_RUNTIME_CONFIG?.authMode !== "supabase") {
-    status.textContent = "Legacy import is available in the hosted Learnova app.";
+    status.textContent = "This feature is available in the online version of Learnova.";
     return;
   }
   if (!localStorage.getItem("scorelytics_access_token")) {
@@ -23,7 +23,7 @@
     const file = fileInput.files && fileInput.files[0];
     if (!file) return;
     if (file.size > 10 * 1024 * 1024) {
-      status.textContent = "That file is too large. Choose a users.json file under 10 MB.";
+      status.textContent = "That file is too large. Choose a smaller backup file.";
       return;
     }
 
@@ -45,11 +45,12 @@
       accountSelect.disabled = legacyUsers.length === 0;
       importButton.disabled = legacyUsers.length === 0;
       status.textContent = legacyUsers.length
-        ? `${legacyUsers.length} account(s) found. Select only your own account.`
-        : "No accounts with test records were found in that file.";
+        ? `${legacyUsers.length} account(s) found. Choose your own account.`
+        : "We couldn’t find any test scores in that file.";
     } catch (error) {
+      console.error("Could not read the backup file:", error);
       accountSelect.replaceChildren(new Option("Could not read this file", ""));
-      status.textContent = `Could not read users.json: ${error.message}`;
+      status.textContent = "We couldn’t open that file. Choose a Learnova backup and try again.";
     }
   });
 
@@ -60,7 +61,7 @@
   importButton.addEventListener("click", async () => {
     const selectedUser = legacyUsers.find(user => user.username === accountSelect.value);
     if (!selectedUser) {
-      status.textContent = "Choose one of your old accounts first.";
+      status.textContent = "Choose your account first.";
       return;
     }
 
@@ -85,7 +86,7 @@
       : null;
 
     importButton.disabled = true;
-    status.textContent = `Importing ${tests.length} test record(s)…`;
+    status.textContent = "Adding your scores…";
     try {
       const response = await fetch("/api/import-legacy", {
         method: "POST",
@@ -100,9 +101,10 @@
       if (!response.ok || !result.success) {
         throw new Error(result.message || `Import failed with HTTP ${response.status}.`);
       }
-      status.textContent = `Imported ${tests.length} test record(s)${location ? " and the saved school location" : ""}.`;
+      status.textContent = `Your scores${location ? " and school" : ""} were added.`;
     } catch (error) {
-      status.textContent = `Import failed: ${error.message}`;
+      console.error("Could not add the backup:", error);
+      status.textContent = "We couldn’t add your backup. Please try again.";
       importButton.disabled = false;
     }
   });

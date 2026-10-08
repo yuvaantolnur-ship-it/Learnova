@@ -179,7 +179,7 @@ async function changePassword(event) {
 
         if (typeof showToast === "function") {
             showToast(
-                "Server error ❌",
+                "Something went wrong. Please try again.",
                 "error"
             );
         }

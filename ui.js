@@ -496,7 +496,7 @@ async function saveSchoolLocationMetadata() {
 
     if (!selectedRegion || !specifiedSchool || !targetCoordinates) {
         if (typeof showToast === "function") {
-            showToast("Please pick a region, type school name, and drop a pin! ❌", "error");
+            showToast("Choose a town, enter your school name, and pick it on the map.", "error");
         }
         return;
     }
@@ -522,12 +522,12 @@ async function saveSchoolLocationMetadata() {
         }
         regionSelect.value = selectedRegion;
         if (typeof showToast === "function") {
-            showToast("Global Campus Profile Saved! 🌍", "success");
+            showToast("Your school was saved! 🌍", "success");
         }
     } catch (error) {
         console.error("Could not save school location:", error);
         if (typeof showToast === "function") {
-            showToast("Could not save location ❌", "error");
+            showToast("Could not save your school. Please try again.", "error");
         }
     }
 }
@@ -537,7 +537,7 @@ async function searchGlobalRegion() {
     const targetQuery = document.getElementById("globalRegionInput").value.trim();
     
     if (!targetQuery) {
-        if (typeof showToast === "function") showToast("Please type a location parameter first! ❌", "error");
+        if (typeof showToast === "function") showToast("Type a town or city to search.", "error");
         return;
     }
 
@@ -567,15 +567,15 @@ async function searchGlobalRegion() {
             });
 
             if (typeof showToast === "function") {
-                showToast(`Located: ${matchingData[0].display_name.split(',')[0]} ✈️`, "success");
+                showToast(`Found ${matchingData[0].display_name.split(',')[0]} ✈️`, "success");
             }
             placeSchoolMarker(latitude, longitude);
         } else {
-            if (typeof showToast === "function") showToast("Location pattern not found globally 🗺️", "error");
+            if (typeof showToast === "function") showToast("We couldn’t find that place. Try another name.", "error");
         }
     } catch (fault) {
         console.error("Geocoding connection dropped:", fault);
-        if (typeof showToast === "function") showToast("Failed to link with global map servers ❌", "error");
+        if (typeof showToast === "function") showToast("The map isn’t working right now. Please try again.", "error");
     }
 }
 

@@ -112,7 +112,7 @@ window.sendMessage = async function() {
         console.error(err);
         chatMsgWindow.innerHTML += `
             <div style="color: #ef4444; font-size: 13px; align-self: flex-start; margin: 4px 0;">
-                ⚠️ AI Micro-server unreachable. Make sure the Node engine process is active on Port 8000!
+                ⚠️ StudyBot is having trouble right now. Please try again in a moment.
             </div>
         `;
     }
@@ -142,7 +142,7 @@ function showCloudChatWelcome() {
 }
 
 function showCloudChatError(message) {
-    showCloudChatMessage("assistant", `StudyBot couldn't complete that action: ${message}`);
+    showCloudChatMessage("assistant", "StudyBot is having trouble right now. Please try again in a moment.");
 }
 
 async function readCloudResponse(response) {

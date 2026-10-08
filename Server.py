@@ -42,7 +42,7 @@ def analyze_scores_and_chat(user_message: str):
             data = json.load(file)
             tests = data.get("tests", [])
     except FileNotFoundError:
-        return {"reply": "I couldn't find your ScoreLytics data file yet. Try uploading a test first!"}
+        return {"reply": "I can help once you add a test score. Add one first, then ask me again!"}
 
     # 2. Group the scores by subject dynamically
     subject_map = {}
@@ -64,18 +64,18 @@ def analyze_scores_and_chat(user_message: str):
 
             if trend == "dropping":
                 return {
-                    "reply": f"Scanning ScoreLytics charts... 📊 In {subject.title()}, your average is {current_average:.1f}%, but your scores are currently heading down by about {abs(velocity):.1f} points per test. Since your last test was a {last_score}%, I recommend opening your Analytics graph to see exactly where the dip started, and reviewing your notes for 15 minutes tonight to break this streak!"
+                    "reply": f"📊 Your average in {subject.title()} is {current_average:.1f}%. Your recent scores have gone down a little. Your last score was {last_score}%. Try reviewing your notes for 15 minutes today, then practise a few questions."
                 }
             elif trend == "improving":
                 return {
-                    "reply": f"Awesome news! 🚀 My algorithms show your {subject.title()} scores are climbing up by {velocity:.1f} points per test! Your latest test was a fantastic {last_score}%. Keep using this exact study routine, your graph is looking excellent!"
+                    "reply": f"Awesome work! 🚀 Your {subject.title()} scores are going up. Your latest score was {last_score}%. Keep practising and be proud of your progress!"
                 }
             else:
                 return {
-                    "reply": f"Checked your data! 🎯 Your {subject.title()} score is holding steady at an average of {current_average:.1f}%. Your last score was {last_score}%. If you want to push this flat line upward, let's set a goal to upload a practice test with a target score of {current_average + 5:.1f}% this week!"
+                    "reply": f"🎯 Your {subject.title()} score is staying steady, with an average of {current_average:.1f}%. Your last score was {last_score}%. Try a few extra practice questions this week and see if you can beat your last score!"
                 }
 
     # Default overview analysis if no specific subject was named
     return {
-        "reply": "Hello! I am your ScoreLytics StudyBot. Mention a specific subject (like 'Math' or 'Science') in your question, and I will instantly run a mathematical trend analysis on your uploaded tests to tell you if you're improving, steady, or dropping!"
+        "reply": "Hi! I’m StudyBot. Ask me about a subject, your test scores, or how to make a study plan."
     }

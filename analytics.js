@@ -8,7 +8,7 @@ function renderStats(tests) {
     const avgEl = document.getElementById("average");
     const perfEl = document.getElementById("performance");
     if (!tests || tests.length === 0) {
-        avgEl.textContent = "No Data";
+        avgEl.textContent = "Take a test to see your average";
         perfEl.textContent = "-";
         return;
     }
@@ -48,9 +48,9 @@ function renderOverviewExtras(tests) {
     const values = tests.map(t => t.score / t.total);
     const variance = values.reduce((sum, value) => sum + Math.abs(value - values[0]), 0) / values.length;
 
-    if (variance < 0.10) consistencyEl.textContent = "Very Consistent ✅";
-    else if (variance < 0.20) consistencyEl.textContent = "Moderate ⚖️";
-    else consistencyEl.textContent = "Inconsistent ⚠️";
+    if (variance < 0.10) consistencyEl.textContent = "Very steady ✅";
+    else if (variance < 0.20) consistencyEl.textContent = "Mostly steady ⚖️";
+    else consistencyEl.textContent = "Changing often ⚠️";
 }
 
 // =====================================
@@ -82,9 +82,9 @@ function renderProfileStats(tests) {
 function calculateConsistency(tests) {
     const values = tests.map(test => test.score / test.total);
     const variance = values.reduce((sum, value) => sum + Math.abs(value - values[0]), 0) / values.length;
-    if (variance < 0.10) return "High ✅";
-    if (variance < 0.20) return "Moderate ⚖️";
-    return "Low ❌";
+    if (variance < 0.10) return "Very steady ✅";
+    if (variance < 0.20) return "Mostly steady ⚖️";
+    return "Changing often ⚠️";
 }
 
 // =====================================
@@ -95,7 +95,7 @@ function renderInsight(tests) {
     if (!insight) return;
 
     if (!tests || tests.length < 3) {
-        insight.textContent = "📈 Add at least 3 tests to track velocity trends.";
+        insight.textContent = "📈 Add at least 3 test scores to see how your results are changing.";
         return;
     }
     const firstAvg = tests[0].score / tests[0].total * 100;
@@ -113,13 +113,13 @@ function renderInsight(tests) {
 
     let statusText = "";
     if (avgVelocity > 2) {
-        statusText = `🚀 <strong>Recent Momentum: Improving rapidly!</strong> Your performance velocity is climbing by +${avgVelocity.toFixed(1)}% per test.`;
+        statusText = `🚀 <strong>You’re improving!</strong> Your score has gone up by about ${avgVelocity.toFixed(1)}% on recent tests.`;
     } else if (avgVelocity < -2) {
-        statusText = `⚠️ <strong>Recent Momentum: Dropping alert!</strong> Performance vector is slipping by ${avgVelocity.toFixed(1)}% per test. Check your weakest subject graphs below.`;
+        statusText = `⚠️ <strong>Your recent scores have gone down.</strong> Try practising a subject that feels tricky.`;
     } else {
-        statusText = `⚖️ <strong>Recent Momentum: Stabilized curve.</strong> Your test trajectory is holding flat within normal variances.`;
+        statusText = `⚖️ <strong>Your scores are staying steady.</strong> Keep practising to build on your progress.`;
     }
-    insight.innerHTML = `${statusText} <br><span style="font-size: 12px; opacity: 0.7;">Long-term delta since baseline setup: ${overallChange >= 0 ? '+' : ''}${overallChange.toFixed(1)}%</span>`;
+    insight.innerHTML = `${statusText} <br><span style="font-size: 12px; opacity: 0.7;">Change since your first test: ${overallChange >= 0 ? '+' : ''}${overallChange.toFixed(1)}%</span>`;
 }
 
 // =====================================
@@ -152,7 +152,7 @@ function renderSubjectCharts(tests) {
     container.innerHTML = "";
 
     if (tests.length === 0) {
-        container.innerHTML = "<p style='padding:15px; opacity:0.6;'>🔎 No velocity performance data tracked.</p>";
+        container.innerHTML = "<p style='padding:15px; opacity:0.6;'>Add a test score to see your results by subject.</p>";
         return;
     }
 
@@ -166,7 +166,7 @@ function renderSubjectCharts(tests) {
             cleanDate = new Date().toLocaleDateString();
         }
         return {
-            subject: t.subject || "General Track",
+            subject: t.subject || "Other",
             score: Number(t.score) || 0,
             total: Number(t.total) || 10,
             date: cleanDate

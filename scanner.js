@@ -114,12 +114,12 @@ async function startCameraStream() {
         }
         if (activeVideoStream) {
             if (hasVisibleVideoFrame(videoEl)) {
-                setScannerStatus("Camera Starting...", "#f59e0b", "CAMERA");
+                setScannerStatus("Starting camera...", "#f59e0b", "CAMERA");
                 console.info("[CAMERA] Existing preview is visible; waiting for a complete decoded frame.");
                 const existingStream = activeVideoStream;
                 const existingRequestId = cameraRequestId;
                 if (await waitForCameraReady(videoEl, existingStream, existingRequestId)) {
-                    setScannerStatus("Camera Ready", "#22c55e", "CAMERA");
+                    setScannerStatus("Camera ready", "#22c55e", "CAMERA");
                     return true;
                 }
                 if (hasVisibleVideoFrame(videoEl, existingStream)) {
@@ -133,7 +133,7 @@ async function startCameraStream() {
         }
 
         requestId = ++cameraRequestId;
-        setScannerStatus("Camera Starting...", "#f59e0b", "CAMERA");
+        setScannerStatus("Starting camera...", "#f59e0b", "CAMERA");
         console.info("[CAMERA] Requesting camera stream.");
         const stream = await navigator.mediaDevices.getUserMedia({
             video: {
@@ -154,7 +154,7 @@ async function startCameraStream() {
             track.addEventListener("ended", () => {
                 if (activeVideoStream !== stream) return;
                 console.warn("[CAMERA] Video track ended.");
-                setScannerStatus("Camera Starting...", "#f59e0b", "CAMERA");
+                setScannerStatus("Starting camera...", "#f59e0b", "CAMERA");
             });
         });
         videoEl.srcObject = stream;
@@ -169,26 +169,26 @@ async function startCameraStream() {
         if (!ready) {
             if (hasVisibleVideoFrame(videoEl, stream)) {
                 console.warn("[CAMERA] Preview has dimensions and decoded frames; waiting for HAVE_ENOUGH_DATA.");
-                setScannerStatus("Camera Starting...", "#f59e0b", "CAMERA");
+                setScannerStatus("Starting camera...", "#f59e0b", "CAMERA");
                 return false;
             }
             throw new Error("The camera stream opened but video frames are not ready yet.");
         }
 
-        setScannerStatus("Camera Ready", "#22c55e", "CAMERA");
+        setScannerStatus("Camera ready", "#22c55e", "CAMERA");
         return true;
 
     } catch (error) {
         if (requestId !== cameraRequestId) return false;
         if (isCameraReady(videoEl) || hasVisibleVideoFrame(videoEl)) {
             console.warn("[CAMERA] Suppressed camera startup error because a live preview is rendering:", error);
-            setScannerStatus("Camera Ready", "#22c55e", "CAMERA");
+            setScannerStatus("Camera ready", "#22c55e", "CAMERA");
             return true;
         }
         console.error("[CAMERA] Camera startup error:", error);
-        setScannerStatus("Camera Starting...", "#f59e0b", "CAMERA");
+        setScannerStatus("Starting camera...", "#f59e0b", "CAMERA");
         if (typeof showToast === "function") {
-            showToast(`Camera unavailable: ${error.message || "Check camera permission and try again."}`, "error");
+            showToast("Could not start the camera. Allow Learnova to use your camera, then try again.", "error");
         }
         const failedStream = activeVideoStream;
         if (videoEl && videoEl.srcObject === failedStream) videoEl.srcObject = null;
@@ -203,7 +203,7 @@ async function startCameraStream() {
 async function startLearnovaCamera() {
     if (cameraStartPromise) return cameraStartPromise;
     if (isCameraReady(document.getElementById("webcamView"))) {
-        setScannerStatus("Camera Ready", "#22c55e", "CAMERA");
+        setScannerStatus("Camera ready", "#22c55e", "CAMERA");
         return true;
     }
 
@@ -235,7 +235,7 @@ function stopLearnovaCamera() {
 
     isScanThrottled = false;
     activeScanPromise = null;
-    setScannerStatus("Camera stopped.", "#64748b", "CAMERA");
+    setScannerStatus("Camera off", "#64748b", "CAMERA");
 }
 
 function isReviewModalOpen() {
@@ -250,7 +250,7 @@ function rearmScannerEngine() {
     isScanThrottled = false;
     const cameraReady = isCameraReady(document.getElementById("webcamView"));
     setScannerStatus(
-        cameraReady ? "Camera Ready" : "Camera Starting...",
+        cameraReady ? "Camera ready" : "Starting camera...",
         cameraReady ? "#22c55e" : "#f59e0b",
         "SCANNER"
     );
@@ -271,7 +271,7 @@ async function reviewScan(data) {
     }
     if (!isValidScoreResult(data)) {
         console.warn("[OCR] Refusing to show invalid score result:", data);
-        setScannerStatus("Scan Complete", "#f59e0b", "OCR");
+        setScannerStatus("Done", "#f59e0b", "SCANNER");
         return;
     }
 
@@ -353,7 +353,7 @@ function setScanReviewCopy(isScanReview) {
     }
     if (help) {
         help.textContent = isScanReview === "manual"
-            ? "The scan could not read a score. Enter the subject, score, and total below to add it to Tests."
+            ? "We couldn’t read the score. Enter the subject, score, and total below."
             : isScanReview
                 ? "Confirm the subject and score below. Nothing is added to Tests until you verify and save."
                 : "Update the subject and score for this test.";
@@ -423,8 +423,8 @@ async function saveConfirmedScore(result) {
         if (typeof showToast === "function") {
             showToast(
                 saved
-                    ? "Score saved, but Tests did not refresh. Reopen Tests to reload it."
-                    : error.message || "Could not save the verified score.",
+                    ? "Your score was saved, but the list did not update. Open Tests again to see it."
+                    : "Could not save your score. Please try again.",
                 "error"
             );
         }
@@ -433,7 +433,7 @@ async function saveConfirmedScore(result) {
 }
 
 async function processCapturedFrame(imageBase64String, origin) {
-    setScannerStatus("Processing...", "#3b82f6", "OCR");
+    setScannerStatus("Reading score...", "#3b82f6", "SCANNER");
     console.info(`[OCR] ${origin} frame sent to the score parser.`);
     const requestGeneration = scanGeneration;
 
@@ -461,24 +461,24 @@ async function processCapturedFrame(imageBase64String, origin) {
         }
         if (result.success && isValidScoreResult(result.data)) {
             console.info("[OCR] Score extraction completed successfully.", result.data);
-            setScannerStatus("Scan Complete", "#22c55e", "OCR");
-            if (typeof showToast === "function") showToast("Score detected. Review the result.", "success");
+            setScannerStatus("Done", "#22c55e", "SCANNER");
+            if (typeof showToast === "function") showToast("We found a score. Please check it.", "success");
             await reviewScan(result.data);
             return true;
         }
 
         console.info("[OCR] Processing completed without a valid score.", result.message || result.data);
-        setScannerStatus("Scan Complete", "#f59e0b", "OCR");
+        setScannerStatus("Done", "#f59e0b", "SCANNER");
         if (origin === "manual" && typeof showToast === "function") {
             const detail = String(result.message || "");
             const noScoreDetected = /unable to detect|no readable text|no score/i.test(detail);
             if (openManualScoreEntry()) {
                 showToast(
                     noScoreDetected
-                        ? "Couldn't read the score. Enter it here, or cancel and capture a closer, sharper image."
+                        ? "We couldn’t read the score. Enter it here, or try again with the page closer."
                         : detail
-                            ? `Scanner issue: ${detail} You can enter the score manually.`
-                            : "No score was returned. Enter it manually or cancel and try another capture.",
+                            ? "Something went wrong while reading the score. You can enter it yourself."
+                            : "We couldn’t find a score. Enter it yourself or try another picture.",
                     noScoreDetected ? "edit" : "error"
                 );
             }
@@ -490,9 +490,9 @@ async function processCapturedFrame(imageBase64String, origin) {
             return false;
         }
         console.error("[OCR] Request did not complete successfully:", error);
-        setScannerStatus("Scan Complete", "#f59e0b", "OCR");
+        setScannerStatus("Done", "#f59e0b", "SCANNER");
         if (origin === "manual" && openManualScoreEntry() && typeof showToast === "function") {
-            showToast("Automatic scanning is unavailable. Enter the score manually, or cancel and try again later.", "error");
+            showToast("We couldn’t read the score. Enter it below, or try again later.", "error");
         }
         return false;
     } finally {
@@ -510,7 +510,7 @@ async function captureAndParseScore() {
             return;
         }
         if (activeScanPromise) {
-            setScannerStatus("Processing...", "#3b82f6", "SCANNER");
+            setScannerStatus("Reading score...", "#3b82f6", "SCANNER");
             console.info("[SCANNER] Manual capture is waiting for the current capture to finish.");
             try {
                 await activeScanPromise;
@@ -528,7 +528,7 @@ async function captureAndParseScore() {
     }
 
     if (!isCameraReady(document.getElementById("webcamView"))) {
-        setScannerStatus("Camera Starting...", "#f59e0b", "CAMERA");
+        setScannerStatus("Starting camera...", "#f59e0b", "CAMERA");
         const cameraReady = await startLearnovaCamera();
         if (!cameraReady) return;
     }
@@ -538,10 +538,10 @@ async function captureAndParseScore() {
     if (!ready) {
         if (hasVisibleVideoFrame(video)) {
             console.info("[CAMERA] Preview is visible; waiting for a complete frame before capture.");
-            setScannerStatus("Camera Starting...", "#f59e0b", "CAMERA");
+            setScannerStatus("Starting camera...", "#f59e0b", "CAMERA");
         } else {
             console.warn("[CAMERA] Capture is waiting for video readiness.");
-            setScannerStatus("Camera Starting...", "#f59e0b", "CAMERA");
+            setScannerStatus("Starting camera...", "#f59e0b", "CAMERA");
         }
         return;
     }
@@ -554,7 +554,7 @@ async function captureAndParseScore() {
         isScanThrottled = false;
         const cameraReady = isCameraReady(video);
         setScannerStatus(
-            cameraReady ? "Camera Ready" : "Camera Starting...",
+            cameraReady ? "Camera ready" : "Starting camera...",
             cameraReady ? "#22c55e" : "#f59e0b",
             "CAMERA"
         );
@@ -575,7 +575,7 @@ async function captureAndParseScore() {
 // 📦 7. COMPONENT LAYOUT EVENTS BINDING
 // =====================================
 function initializeScanner() {
-    setScannerStatus("Camera Starting...", "#f59e0b", "CAMERA");
+    setScannerStatus("Starting camera...", "#f59e0b", "CAMERA");
     const cameraBtn = document.getElementById("cameraBtn");
     if (cameraBtn) {
         cameraBtn.addEventListener("click", startLearnovaCamera);
