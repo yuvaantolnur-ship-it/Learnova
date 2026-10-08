@@ -8,7 +8,7 @@ import urllib.error
 import urllib.request
 from PySide6.QtCore import QUrl
 from PySide6.QtWidgets import QApplication, QFileDialog, QMainWindow, QMessageBox
-from PySide6.QtWebEngineCore import QWebEngineDownloadRequest, QWebEnginePage, QWebEngineProfile
+from PySide6.QtWebEngineCore import QWebEngineDownloadRequest, QWebEnginePage, QWebEnginePermission, QWebEngineProfile
 from PySide6.QtWebEngineWidgets import QWebEngineView
 
 express_process = None
@@ -124,10 +124,17 @@ def main():
 
     profile.downloadRequested.connect(handle_download_requested)
 
-    def handle_web_feature_permission(origin, feature):
-        permission = QWebEnginePage.PermissionPolicy.PermissionDeniedByUser
+    def handle_web_permission_requested(permission):
+        if not permission.isValid():
+            return
+
+        origin = permission.origin()
         is_local_app = origin.host() in {"localhost", "127.0.0.1"} and origin.port() == 8000
-        if is_local_app and feature == QWebEnginePage.Feature.MediaVideoCapture:
+        is_camera_permission = permission.permissionType() in {
+            QWebEnginePermission.PermissionType.MediaVideoCapture,
+            QWebEnginePermission.PermissionType.MediaAudioVideoCapture,
+        }
+        if is_local_app and is_camera_permission:
             answer = QMessageBox.question(
                 window,
                 "Learnova camera access",
@@ -136,11 +143,12 @@ def main():
                 QMessageBox.StandardButton.No
             )
             if answer == QMessageBox.StandardButton.Yes:
-                permission = QWebEnginePage.PermissionPolicy.PermissionGrantedByUser
+                permission.grant()
+                return
 
-        web_page.setFeaturePermission(origin, feature, permission)
+        permission.deny()
 
-    web_page.featurePermissionRequested.connect(handle_web_feature_permission)
+    web_page.permissionRequested.connect(handle_web_permission_requested)
     
     # Configure parameters to match web security bypass requirements and enable local storage engines
     settings = web_view.settings()
