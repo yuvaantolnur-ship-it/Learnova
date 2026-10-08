@@ -201,16 +201,16 @@
       <div id="scanner" class="tab">
         <h2>📸 Computer Vision OCR Document Scanner</h2>
         <div class="card" style="text-align: center; width: 100%;">
-          <p style="opacity: 0.7; margin-bottom: 15px;">Engage background camera capture lanes to scan text summaries into parsing algorithms.</p>
+          <p style="opacity: 0.7; margin-bottom: 15px;">Show the score and total clearly, fill most of the frame, avoid glare, then capture. The preview matches the image sent for recognition.</p>
           <div class="camera-container-deck" style="display: inline-block;">
-            <video id="webcamView" autoplay playsinline style="width: 100%; max-width: 540px; height: 400px; background: #000; display: block; transform: scaleX(-1);"></video>
+            <video id="webcamView" autoplay playsinline style="width: 100%; max-width: 720px; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: #000; display: block;"></video>
           </div>
           <canvas id="captureCanvas" style="display: none;"></canvas>
-          <div id="scannerStatus" style="margin-top: 15px; font-weight: bold; color: #f59e0b;">Camera stream standby. Activate hardware interface loops.</div>
+          <div id="scannerStatus" style="margin-top: 15px; font-weight: bold; color: #f59e0b;">Camera Starting...</div>
           <div style="margin-top: 20px; display: flex; justify-content: center; gap: 15px;">
-            <button type="button" id="cameraBtn" style="background: #374151; color: white; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;">Power Camera Hardware</button>
-            <button type="button" onclick="captureAndParseScore()" style="background: #2563eb; color: white; padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;">Force Manual Snapshot Capture</button>
-            <button type="button" onclick="stopLearnovaCamera()" style="background: #7f1d1d; color: #fca5a5; padding: 10px 16px; border-radius: 8px; border: 1px solid #991b1b; cursor: pointer;">Cut Stream</button>
+            <button type="button" id="cameraBtn" style="background: #374151; color: white; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;">Start Camera</button>
+            <button type="button" onclick="captureAndParseScore()" style="background: #2563eb; color: white; padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;">Capture Page</button>
+            <button type="button" onclick="stopLearnovaCamera()" style="background: #7f1d1d; color: #fca5a5; padding: 10px 16px; border-radius: 8px; border: 1px solid #991b1b; cursor: pointer;">Stop Camera</button>
           </div>
         </div>
       </div>
@@ -265,7 +265,8 @@
 
   <div id="editModal" class="modal">
     <div class="modal-content" style="width: 340px; display: flex; flex-direction: column; gap: 12px;">
-      <h3 style="margin:0;">✏️ Edit Data Parameters</h3>
+      <h3 id="editModalTitle" style="margin:0;">Edit Test Details</h3>
+      <p id="editModalHelp" style="margin:0; font-size:13px; opacity:0.75;">Update the subject and score for this test.</p>
       <div>
         <label style="font-size: 12px; opacity: 0.7; display:block; margin-bottom:4px;">Subject Name:</label>
         <input type="text" id="editSubject" style="margin:0;">
@@ -279,7 +280,7 @@
         <input type="number" id="editTotal" style="margin:0;">
       </div>
       <div class="modal-actions" style="margin-top: 10px; gap: 10px;">
-        <button type="button" id="saveEditBtn" onclick="saveEdit()" style="flex:1; background: #3b82f6; color: white; padding: 10px; border-radius: 6px; border:none; font-weight:bold; cursor:pointer;">Save Details</button>
+        <button type="button" id="saveEditBtn" style="flex:1; background: #3b82f6; color: white; padding: 10px; border-radius: 6px; border:none; font-weight:bold; cursor:pointer;">Save Details</button>
         <button type="button" id="closeEditBtn" style="background:#374151; color:white; padding: 10px; border-radius: 6px; border:none; cursor:pointer;">Cancel</button>
       </div>
     </div>

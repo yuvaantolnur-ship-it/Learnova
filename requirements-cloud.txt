@@ -2,3 +2,4 @@ numpy>=1.26,<3
 opencv-python-headless>=4.10,<5
 pytesseract>=0.3.13,<1
 reportlab>=4.2,<6
+easyocr>=1.7.2,<2

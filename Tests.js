@@ -8,18 +8,19 @@ let currentTests = [];
 // API INTEGRATION
 // ======================================
 async function getTests() {
-    try {
-        const response = await fetch("http://localhost:8000/getTests", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: currentUser })
-        });
-        const data = await response.json();
-        return Array.isArray(data) ? data : [];
-    } catch (error) {
-        console.error("API Error fetching tests:", error);
-        return [];
+    const response = await fetch("http://localhost:8000/getTests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: currentUser })
+    });
+    if (!response.ok) {
+        throw new Error(`Could not load tests (HTTP ${response.status}).`);
     }
+    const data = await response.json();
+    if (!Array.isArray(data)) {
+        throw new Error("The server returned an invalid Tests list.");
+    }
+    return data;
 }
 
 async function loadTests() {
@@ -38,8 +39,10 @@ async function loadTests() {
         if (typeof loadProfile === "function") loadProfile();
         if (typeof renderProfileStats === "function") renderProfileStats(tests);
         if (typeof loadChatHistory === "function") loadChatHistory(); 
+        return tests;
     } catch (e) {
         console.error("Initialization error:", e);
+        return null;
     }
 }
 

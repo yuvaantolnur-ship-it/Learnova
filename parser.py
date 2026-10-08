@@ -39,29 +39,56 @@ def advanced_hybrid_ocr(path):
     if image is None:
         raise Exception("Source captured frames could not be read.")
 
-    # 1. Convert to grayscale and isolate high-contrast lines
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    sharpen_filter = np.array([[-1, -1, -1], 
-                               [-1,  9, -1], 
-                               [-1, -1, -1]])
-    sharp_gray = cv2.filter2D(gray, -1, sharpen_filter)
+    height, width = gray.shape
+    scale = min(2.5, 1800 / max(height, width))
+    if scale > 1:
+        gray = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
 
-    # 2. SPEED-BOOST: Run a blazing fast, crisp Tesseract pass first
-    _, thresh_otsu = cv2.threshold(sharp_gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-    tesseract_text = pytesseract.image_to_string(thresh_otsu, config='--psm 6').strip()
+    _, otsu = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    adaptive = cv2.adaptiveThreshold(
+        gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 11
+    )
+    variants = (gray, otsu, adaptive)
+    tesseract_texts = []
+    tesseract_available = True
 
-    # 🎯 IF THE ACCURATE TEXT PATHWAY IS CLEAR, RETURN IMMEDIATELY (Takes < 0.5 seconds!)
-    # We check if it caught any numeric fractions or scores right away
-    if re.search(r'\d+', tesseract_text) and len(tesseract_text) > 2:
-        print("High-Speed Tesseract pipeline successful.", file=sys.stderr)
-        return tesseract_text
+    try:
+        pytesseract.get_tesseract_version()
+    except pytesseract.pytesseract.TesseractNotFoundError as error:
+        tesseract_available = False
+        print(f"Tesseract is unavailable; trying the OCR fallback: {error}", file=sys.stderr)
+
+    if tesseract_available:
+        for variant in variants:
+            for page_mode in (6, 11, 12):
+                try:
+                    text = pytesseract.image_to_string(
+                        variant, config=f"--psm {page_mode}"
+                    ).strip()
+                except pytesseract.pytesseract.TesseractError as error:
+                    tesseract_available = False
+                    print(f"Tesseract could not process the image: {error}", file=sys.stderr)
+                    break
+                if not text:
+                    continue
+                tesseract_texts.append(text)
+                if regex_extract(text):
+                    print(
+                        f"Tesseract recognized a score using page mode {page_mode}.",
+                        file=sys.stderr
+                    )
+                    return text
+            if not tesseract_available:
+                break
+
+    tesseract_text = max(tesseract_texts, key=len, default="")
 
     if os.environ.get("SCORELYTICS_HOSTED") == "1" and os.environ.get("SCORELYTICS_ENABLE_EASYOCR") != "1":
-        print("Tesseract found no score and hosted EasyOCR is disabled.", file=sys.stderr)
+        print("Tesseract found no score; hosted EasyOCR is disabled.", file=sys.stderr)
         return tesseract_text
 
-    # 3. SLOW FALLBACK: Only engage the heavy EasyOCR model if Tesseract reads pure noise
-    print("Tesseract found no readable score; initializing CPU EasyOCR fallback.", file=sys.stderr)
+    print("Tesseract found no score; initializing CPU EasyOCR fallback.", file=sys.stderr)
     import easyocr
 
     with redirect_stdout(sys.stderr):
@@ -69,26 +96,72 @@ def advanced_hybrid_ocr(path):
         easyocr_results = ocr_reader.readtext(image, detail=0)
     easyocr_text = " ".join(easyocr_results).strip()
 
-    if easyocr_text:
+    if regex_extract(easyocr_text):
         return easyocr_text
-        
-    return tesseract_text
+    return easyocr_text or tesseract_text
 
 # ============================================
 # PATTERN MATCH LAYOUT PARSER
 # ============================================
 
 def regex_extract(text):
+    normalized_text = re.sub(r"\s+", " ", text)
     patterns = [
-        r'(\d+)\s*/\s*(\d+)',
-        r'(\d+)\s+out\s+of\s+(\d+)',
-        r'(\d+)\s+of\s+(\d+)'
+        r'(\d{1,4})\s*/\s*(\d{1,4})',
+        r'(\d{1,4})\s+out\s+of\s+(\d{1,4})',
+        r'(\d{1,4})\s+of\s+(\d{1,4})',
+        r'(\d{1,4})\s*[|¦:]\s*(\d{1,4})'
     ]
     for pattern in patterns:
-        match = re.search(pattern, text, re.IGNORECASE)
-        if match:
-            return {"score": int(match.group(1)), "total": int(match.group(2))}
+        for match in re.finditer(pattern, normalized_text, re.IGNORECASE):
+            score = int(match.group(1))
+            total = int(match.group(2))
+            if total > 0 and score <= total:
+                return {"score": score, "total": total}
+
+    score_pattern = re.compile(
+        r'\b(?:score|marks?\s*(?:obtained|earned|scored)|obtained|earned)\b'
+        r'\s*(?:was|is|:|=|-)?\s*(\d{1,4})\b',
+        re.IGNORECASE
+    )
+    total_pattern = re.compile(
+        r'\b(?:total|maximum|max|possible)\s*(?:marks?|score|points?)?\b'
+        r'\s*(?:was|is|:|=|-)?\s*(\d{1,4})\b',
+        re.IGNORECASE
+    )
+    scores = [(int(match.group(1)), match.start()) for match in score_pattern.finditer(normalized_text)]
+    totals = [(int(match.group(1)), match.start()) for match in total_pattern.finditer(normalized_text)]
+    for score, score_position in scores:
+        for total, total_position in totals:
+            if abs(total_position - score_position) <= 100 and total > 0 and score <= total:
+                return {"score": score, "total": total}
     return None
+
+
+def validate_ai_extraction(data):
+    if not isinstance(data, dict):
+        return None
+    try:
+        score = float(data.get("score"))
+        total = float(data.get("total"))
+    except (TypeError, ValueError):
+        return None
+    if (
+        not score.is_integer()
+        or not total.is_integer()
+        or total <= 0
+        or score < 0
+        or score > total
+    ):
+        return None
+
+    subject = str(data.get("subject") or "Unknown Subject").strip()
+    if not subject:
+        subject = "Unknown Subject"
+    if subject.isdigit():
+        subject = f"Subject {subject}"
+    return {"subject": subject, "score": int(score), "total": int(total)}
+
 
 # ============================================
 # LOCAL AI PARSING INTERFACE
@@ -140,18 +213,28 @@ def main():
             return
 
         regex_data = regex_extract(text)
-        ai_data = None if os.environ.get("SCORELYTICS_HOSTED") == "1" else ask_ollama(text)
-
-        if ai_data:
-            print(json.dumps(ai_data))
-            return
+        ai_data = None
+        if os.environ.get("SCORELYTICS_HOSTED") != "1":
+            ai_data = validate_ai_extraction(ask_ollama(text))
 
         if regex_data:
+            # Trust the OCR's verified fraction; use AI only to enrich its subject.
+            if (
+                ai_data
+                and ai_data["score"] == regex_data["score"]
+                and ai_data["total"] == regex_data["total"]
+            ):
+                print(json.dumps(ai_data))
+                return
             print(json.dumps({
                 "subject": "Unknown Subject",
                 "score": regex_data["score"],
                 "total": regex_data["total"]
             }))
+            return
+
+        if ai_data:
+            print(json.dumps(ai_data))
             return
 
         print(json.dumps({"error": "Unable to detect score.", "debug_text": text}))

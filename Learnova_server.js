@@ -377,10 +377,24 @@ app.post("/api/auto-upload", async (req, res) => {
 
       try {
         const parsedResults = JSON.parse(stdout.trim());
-        if (parsedResults.error) {
-          return res.json({ success: false, message: parsedResults.error });
+        const score = Number(parsedResults.score);
+        const total = Number(parsedResults.total);
+        if (
+          parsedResults.error ||
+          typeof parsedResults.score !== "number" ||
+          typeof parsedResults.total !== "number" ||
+          !Number.isFinite(score) ||
+          !Number.isFinite(total) ||
+          total <= 0 ||
+          score < 0 ||
+          score > total
+        ) {
+          return res.json({ success: false, message: parsedResults.error || "Unable to detect a valid score." });
         }
-        res.json({ success: true, data: parsedResults });
+        res.json({
+          success: true,
+          data: { ...parsedResults, score, total }
+        });
       } catch (parseError) {
         console.error("Scanner output parse failure:", parseError, stdout);
         res.status(500).json({ success: false, message: "Scanner returned an invalid response." });
@@ -402,15 +416,30 @@ app.post("/api/auto-upload", async (req, res) => {
 // ✅ LOG CONFIRMED PARSED ACADEMIC METRICS BACK INTO SYSTEM
 app.post("/api/save-confirmed-score", async (req, res) => {
   const { username, subject, score, total } = req.body;
+  const numericScore = Number(score);
+  const numericTotal = Number(total);
+  if (
+    typeof subject !== "string" ||
+    !subject.trim() ||
+    typeof score !== "number" ||
+    typeof total !== "number" ||
+    !Number.isFinite(numericScore) ||
+    !Number.isFinite(numericTotal) ||
+    numericTotal <= 0 ||
+    numericScore < 0 ||
+    numericScore > numericTotal
+  ) {
+    return res.status(400).json({ success: false, message: "Enter a valid subject, score, and total." });
+  }
   
   await db.read();
   const user = db.data.users.find(u => u.username === username);
   
   if (user) {
     user.tests.push({
-      subject: subject,
-      score: score,
-      total: total,
+      subject: subject.trim(),
+      score: numericScore,
+      total: numericTotal,
       date: new Date().toLocaleDateString()
     });
     await db.write();

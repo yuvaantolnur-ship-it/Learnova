@@ -771,8 +771,21 @@ app.post("/api/auto-upload", requireUser, limitUserRequests(40, 60_000), async (
         }
         try {
           const result = JSON.parse(stdout.trim());
-          if (result.error) return res.json({ success: false, message: result.error });
-          res.json({ success: true, data: result });
+          const score = Number(result.score);
+          const total = Number(result.total);
+          if (
+            result.error ||
+            typeof result.score !== "number" ||
+            typeof result.total !== "number" ||
+            !Number.isFinite(score) ||
+            !Number.isFinite(total) ||
+            total <= 0 ||
+            score < 0 ||
+            score > total
+          ) {
+            return res.json({ success: false, message: result.error || "Unable to detect a valid score." });
+          }
+          res.json({ success: true, data: { ...result, score, total } });
         } catch (parseError) {
           console.error("Hosted scanner returned invalid output:", parseError);
           res.status(502).json({ success: false, message: "Scanner returned an invalid response." });

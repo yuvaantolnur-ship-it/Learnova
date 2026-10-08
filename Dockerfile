@@ -22,7 +22,10 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts
 
 COPY requirements-cloud.txt ./
-RUN pip3 install --break-system-packages --no-cache-dir -r requirements-cloud.txt
+RUN pip3 install --break-system-packages --no-cache-dir \
+        --index-url https://download.pytorch.org/whl/cpu torch torchvision \
+    && pip3 install --break-system-packages --no-cache-dir -r requirements-cloud.txt \
+    && python3 -c "import easyocr; easyocr.Reader(['en'], gpu=False, download_enabled=True)"
 
 COPY . .
 

@@ -2,13 +2,15 @@ services:
   - type: web
     name: scorelytics-api
     runtime: docker
-    plan: free
+    plan: standard
     dockerfilePath: ./Dockerfile
     dockerContext: .
     autoDeploy: false
     healthCheckPath: /api/health
     envVars:
       - key: SCORELYTICS_HOSTED
+        value: "1"
+      - key: SCORELYTICS_ENABLE_EASYOCR
         value: "1"
       - key: SCORELYTICS_PYTHON
         value: python3
