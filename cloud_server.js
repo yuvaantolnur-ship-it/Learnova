@@ -700,8 +700,11 @@ app.post("/chat", requireUser, limitUserRequests(10, 60_000), async (req, res, n
         maxBuffer: 2 * 1024 * 1024
       },
       (error, stdout, stderr) => {
+        if (stderr && stderr.trim()) {
+          console.info("Hosted StudyBot diagnostics:", String(stderr).trim().slice(-4000));
+        }
         if (error) {
-          console.error("Hosted StudyBot failed:", error, String(stderr || "").slice(-4000));
+          console.error("Hosted StudyBot failed:", error);
           return res.status(502).json({ reply: "StudyBot could not finish that request. Please try again later." });
         }
         try {

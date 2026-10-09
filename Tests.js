@@ -8,7 +8,7 @@ let currentTests = [];
 // API INTEGRATION
 // ======================================
 async function getTests() {
-    const response = await fetch("http://localhost:8000/getTests", {
+    const response = await fetch("http://localhost:10000/getTests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: currentUser })
@@ -67,7 +67,7 @@ async function addTest(event) {
     const test = { subject, score, total, date: new Date().toLocaleDateString() };
 
     try {
-        const response = await fetch("http://localhost:8000/addTest", {
+        const response = await fetch("http://localhost:10000/addTest", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: currentUser, test })
@@ -148,7 +148,7 @@ async function executeDirectSaveUpdate(index, subject, score, total, date) {
     testsList[index] = { subject, score, total, date };
 
     try {
-        const res = await fetch("http://localhost:8000/saveAllTests", {
+        const res = await fetch("http://localhost:10000/saveAllTests", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({ username: localStorage.getItem("user") || "Yuvaan Tolnur", tests: testsList })
@@ -175,8 +175,8 @@ async function saveEdit() {
             date: tests[editIndex].date
         };
 
-        // FIXED: Added absolute route URL mapping to port 8000
-        const res = await fetch("http://localhost:8000/saveAllTests", {
+        // FIXED: Added absolute route URL mapping to port 10000
+        const res = await fetch("http://localhost:10000/saveAllTests", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: currentUser, tests })
@@ -198,8 +198,8 @@ async function deleteTest(i) {
         const tests = await getTests();
         tests.splice(i, 1);
 
-        // FIXED: Added absolute route URL mapping to port 8000
-        const res = await fetch("http://localhost:8000/saveAllTests", {
+        // FIXED: Added absolute route URL mapping to port 10000
+        const res = await fetch("http://localhost:10000/saveAllTests", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: currentUser, tests })
@@ -268,7 +268,7 @@ async function triggerPDFReportCompilation() {
     showToast("Making your study plan…", "edit");
     
     try {
-        const response = await fetch("http://localhost:8000/api/export-pdf", {
+        const response = await fetch("http://localhost:10000/api/export-pdf", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: currentUser })

@@ -519,7 +519,7 @@ app.get("/api/location", async (req, res) => {
 // ==========================================================================
 // ✅ RUN DATABASE INITIALIZATION & START DASHBOARD SERVER LISTENERS
 // ==========================================================================
-const serverPort = Number(process.env.PORT) || 8000;
+const serverPort = Number(process.env.PORT) || 10000;
 initDB().then(() => {
   app.listen(serverPort, "127.0.0.1", () => {
     console.log(`✅ Server running on http://localhost:${serverPort}`);

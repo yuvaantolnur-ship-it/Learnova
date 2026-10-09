@@ -79,7 +79,11 @@
           });
           const signupResult = await response.json();
           if (!response.ok || !signupResult.success) {
-            throw new Error(signupResult.message || "Account creation failed.");
+            throw new Error(
+              signupResult.message ||
+              signupResult.error ||
+              `Account creation failed (HTTP ${response.status}).`
+            );
           }
           if (signupResult.access_token) {
             localStorage.setItem("scorelytics_access_token", signupResult.access_token);
@@ -116,7 +120,7 @@
 
       } catch (err) {
         console.error(err);
-        alert("Something went wrong. Please try again.");
+        alert(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       }
     }
 

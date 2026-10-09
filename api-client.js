@@ -10,7 +10,7 @@
     if (cloudMode && target.origin === window.location.origin) {
       return new URL(`${apiBaseUrl}${target.pathname}${target.search}${target.hash}`);
     }
-    if (cloudMode && target.origin === "http://localhost:8000") {
+    if (cloudMode && target.origin === "http://localhost:10000") {
       return new URL(`${apiBaseUrl}${target.pathname}${target.search}${target.hash}`);
     }
     return target;

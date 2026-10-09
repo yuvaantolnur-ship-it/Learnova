@@ -390,7 +390,7 @@ async function saveConfirmedScore(result) {
     }
     let saved = false;
     try {
-        const response = await fetch("http://localhost:8000/api/save-confirmed-score", {
+        const response = await fetch("http://localhost:10000/api/save-confirmed-score", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -438,7 +438,7 @@ async function processCapturedFrame(imageBase64String, origin) {
     const requestGeneration = scanGeneration;
 
     const request = (async () => {
-        const response = await fetch("http://localhost:8000/api/auto-upload", {
+        const response = await fetch("http://localhost:10000/api/auto-upload", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

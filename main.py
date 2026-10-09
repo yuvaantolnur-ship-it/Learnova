@@ -47,7 +47,7 @@ def start_express_backend():
                 f"The local server stopped during startup. See {os.path.join(log_directory, 'backend.log')}."
             )
         try:
-            with urllib.request.urlopen("http://127.0.0.1:8000/login", timeout=1) as response:
+            with urllib.request.urlopen("http://127.0.0.1:10000/login", timeout=1) as response:
                 if response.status == 200 and b"Login - Learnova" in response.read():
                     return
         except (urllib.error.URLError, TimeoutError):
@@ -129,7 +129,7 @@ def main():
             return
 
         origin = permission.origin()
-        is_local_app = origin.host() in {"localhost", "127.0.0.1"} and origin.port() == 8000
+        is_local_app = origin.host() in {"localhost", "127.0.0.1"} and origin.port() == 10000
         is_camera_permission = permission.permissionType() in {
             QWebEnginePermission.PermissionType.MediaVideoCapture,
             QWebEnginePermission.PermissionType.MediaAudioVideoCapture,
@@ -157,12 +157,12 @@ def main():
     settings.setAttribute(settings.WebAttribute.LocalStorageEnabled, True)
 
     # 3. AUTOMATED REST API COMPATIBILITY INJECTION SHIM
-    # Intercepts legacy pywebview calls and maps them cleanly onto Express fetch routes over Port 8000!
+    # Intercepts legacy pywebview calls and maps them cleanly onto Express fetch routes over Port 10000!
     compatibility_shim_js = """
     window.pywebview = {
         api: {
             verify_student_login: async function(username, password) {
-                const res = await fetch("http://localhost:8000/login", {
+                const res = await fetch("http://localhost:10000/login", {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({ username, password })
@@ -170,7 +170,7 @@ def main():
                 return await res.json();
             },
             register_new_student: async function(username, password) {
-                const res = await fetch("http://localhost:8000/signup", {
+                const res = await fetch("http://localhost:10000/signup", {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({ username, password })
@@ -178,7 +178,7 @@ def main():
                 return await res.json();
             },
             get_student_tests: async function(username) {
-                const res = await fetch("http://localhost:8000/getTests", {
+                const res = await fetch("http://localhost:10000/getTests", {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({ username })
@@ -187,7 +187,7 @@ def main():
             },
             save_student_score: async function(username, subject, score, total) {
                 const test = { subject, score, total, date: new Date().toLocaleDateString() };
-                const res = await fetch("http://localhost:8000/addTest", {
+                const res = await fetch("http://localhost:10000/addTest", {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({ username, test })
@@ -196,7 +196,7 @@ def main():
                 return data.success;
             },
             save_school_location: async function(username, region, schoolName, lat, lng) {
-                const res = await fetch("http://localhost:8000/api/save-location", {
+                const res = await fetch("http://localhost:10000/api/save-location", {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({ username, region, schoolName, coordinates: { lat, lng } })
@@ -205,7 +205,7 @@ def main():
                 return data.success;
             },
             change_student_password: async function(username, newPassword) {
-                const res = await fetch("http://localhost:8000/changePassword", {
+                const res = await fetch("http://localhost:10000/changePassword", {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({ username, newPassword })
@@ -237,7 +237,7 @@ def main():
     developer_shortcut.activated.connect(lambda: web_view.page().setDevToolsPage(QWebEngineView()))
     
     # Route target view frames directly into your running local Express app instance
-    web_view.load(QUrl("http://localhost:8000/Learnova_login.html"))
+    web_view.load(QUrl("http://localhost:10000/Learnova_login.html"))
     window.setCentralWidget(web_view)
     
     window.show()

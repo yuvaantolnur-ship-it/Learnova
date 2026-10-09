@@ -136,7 +136,7 @@ async function changePassword(event) {
     try {
 
         const response = await fetch(
-            "http://localhost:8000/changePassword",
+            "http://localhost:10000/changePassword",
             {
                 method: "POST",
                 headers: {

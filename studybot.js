@@ -83,7 +83,7 @@ window.sendMessage = async function() {
         const testsPayload = typeof allTests !== 'undefined' ? allTests : [];
 
         // 2. Transmit prompt requirements down to local Express server endpoint port routers
-        const response = await fetch("http://localhost:8000/chat", {
+        const response = await fetch("http://localhost:10000/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

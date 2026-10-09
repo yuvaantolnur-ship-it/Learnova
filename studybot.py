@@ -1,6 +1,7 @@
 ﻿import sys
 import json
 import os
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -8,6 +9,12 @@ import urllib.request
 # ====================================
 # HELPERS
 # ====================================
+
+def log_studybot(event, **fields):
+    timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    details = " ".join(f"{name}={value}" for name, value in fields.items())
+    print(f"[STUDYBOT] {timestamp} {event} {details}".rstrip(), file=sys.stderr, flush=True)
+
 
 def safe_average(values):
     if not values:
@@ -157,8 +164,15 @@ def ask_gemini(system_prompt):
     )
     request.add_header("x-goog-api-key", api_key)
 
+    started_at = time.monotonic()
+    log_studybot("gemini_request_started", model=model)
     try:
         with urllib.request.urlopen(request, timeout=60) as response:
+            log_studybot(
+                "gemini_response_received",
+                status=response.status,
+                elapsed_ms=round((time.monotonic() - started_at) * 1000),
+            )
             body = json.loads(response.read().decode("utf-8"))
         candidates = body.get("candidates") if isinstance(body, dict) else None
         parts = (
@@ -175,10 +189,21 @@ def ask_gemini(system_prompt):
         )
         if not reply:
             raise ValueError("The AI service returned no message.")
+        log_studybot("gemini_reply_parsed", reply_characters=len(reply))
         return reply
     except urllib.error.HTTPError as error:
+        log_studybot(
+            "gemini_http_error",
+            status=error.code,
+            elapsed_ms=round((time.monotonic() - started_at) * 1000),
+        )
         raise RuntimeError(f"Gemini request failed with HTTP {error.code}.") from error
     except (urllib.error.URLError, TimeoutError) as error:
+        log_studybot(
+            "gemini_connection_error",
+            error_type=type(error).__name__,
+            elapsed_ms=round((time.monotonic() - started_at) * 1000),
+        )
         raise RuntimeError("Could not connect to Gemini. Check your internet connection and try again.") from error
 
 
@@ -187,7 +212,13 @@ def ask_gemini(system_prompt):
 # ====================================
 
 def main():
+    log_studybot(
+        "process_started",
+        hosted=os.environ.get("SCORELYTICS_HOSTED") == "1",
+        gemini_key_configured=bool(os.environ.get("GEMINI_API_KEY", "").strip()),
+    )
     if len(sys.argv) < 3:
+        log_studybot("invalid_arguments", argument_count=len(sys.argv))
         print(json.dumps({"reply": "StudyBot is having trouble right now. Please try again in a moment."}))
         return
 
@@ -215,6 +246,11 @@ def main():
     strongest = strongest_subject(subject_stats)
     readiness = calculate_readiness(recent_tests)
     predictions = predict_next_score(subject_stats)
+    log_studybot(
+        "prompt_ready",
+        recent_test_count=len(recent_tests),
+        history_message_count=len(chat_history.splitlines()),
+    )
 
     system_prompt = f"""
 You are StudyBot, a brilliant academic advisor.
@@ -245,9 +281,10 @@ Question:
     try:
         reply = ask_gemini(system_prompt)
     except (RuntimeError, ValueError) as error:
-        print(f"[STUDYBOT] Request failed: {error}", file=sys.stderr)
+        log_studybot("request_failed", error=str(error))
         reply = "StudyBot is having trouble right now. Please try again in a moment."
 
+    log_studybot("process_finished", reply_characters=len(reply))
     print(json.dumps({"reply": reply}))
 
 if __name__ == "__main__":
