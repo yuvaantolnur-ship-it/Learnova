@@ -17,7 +17,7 @@ const webFiles = [
   "studybot.js",
   "ui.js"
 ];
-const apiBaseUrl = process.env.SCORELYTICS_PUBLIC_API_URL || "https://scorelytics-app.onrender.com";
+const apiBaseUrl = process.env.SCORELYTICS_PUBLIC_API_URL || "https://learnova-app-sad7.onrender.com";
 const parsedApiUrl = new URL(apiBaseUrl);
 
 if (

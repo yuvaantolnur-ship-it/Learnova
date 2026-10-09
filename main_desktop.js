@@ -9,7 +9,7 @@ const desktopConfig = fs.existsSync(configPath)
   : {};
 const appUrl = process.env.SCORELYTICS_PUBLIC_API_URL
   || desktopConfig.apiBaseUrl
-  || "https://scorelytics-app.onrender.com";
+  || "https://learnova-app-sad7.onrender.com";
 const parsedAppUrl = new URL(appUrl);
 if (
   !["https:", "http:"].includes(parsedAppUrl.protocol) ||

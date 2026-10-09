@@ -1,7 +1,8 @@
-import sys
+﻿import sys
 import json
 import os
 import urllib.error
+import urllib.parse
 import urllib.request
 
 # ====================================
@@ -137,79 +138,48 @@ def format_chat_history(history):
 # OLLAMA BRIDGE
 # ====================================
 
-def ask_ollama(prompt):
+def ask_gemini(system_prompt):
+    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if not api_key:
+        raise RuntimeError("GEMINI_API_KEY is not configured.")
+
+    model = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
     payload = {
-        "model": "qwen2.5:1.5b",
-        "prompt": prompt,
-        "stream": False,
-        "options": {
-            "temperature": 0.6
-        }
-    }
-
-    try:
-        data = json.dumps(payload).encode("utf-8")
-        request = urllib.request.Request(
-            "http://localhost:11434/api/generate",
-            data=data,
-            headers={"Content-Type": "application/json"}
-        )
-
-        with urllib.request.urlopen(request, timeout=60) as response:
-            body = json.loads(response.read().decode("utf-8"))
-    except urllib.error.HTTPError as error:
-        if error.code == 404:
-            raise RuntimeError(
-                "Ollama could not find the qwen2.5:1.5b model. "
-                "Open Ollama and run `ollama pull qwen2.5:1.5b`, then try again."
-            ) from error
-        raise RuntimeError(
-            f"The local Ollama service returned HTTP {error.code}. "
-            "Check that Ollama is running, then try again."
-        ) from error
-    except (urllib.error.URLError, TimeoutError) as error:
-        raise RuntimeError(
-            "StudyBot cannot connect to local Ollama. Open Ollama or run "
-            "`ollama serve`, and make sure `qwen2.5:1.5b` is installed."
-        ) from error
-    except (json.JSONDecodeError, UnicodeDecodeError) as error:
-        raise ValueError("The local Ollama service returned an unreadable response.") from error
-
-    if not isinstance(body, dict) or not isinstance(body.get("response"), str):
-        raise ValueError("The local Ollama service returned an invalid response.")
-
-    reply = body["response"].strip()
-    if not reply:
-        raise ValueError("The local Ollama service returned an empty reply.")
-    return reply
-
-def ask_gemini(prompt):
-    api_key = os.environ.get("GEMINI_API_KEY")
-    payload = {
-        "model": os.environ.get("GEMINI_MODEL", "gemini-pro"),
-        "contents": [{"parts": [{"text": prompt}]}],
-        "temperature": 0.6
+        "contents": [{"parts": [{"text": system_prompt}]}],
+        "generationConfig": {"temperature": 0.6}
     }
     request = urllib.request.Request(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+        f"https://generativelanguage.googleapis.com/v1beta/models/{urllib.parse.quote(model, safe='')}:generateContent",
         data=json.dumps(payload).encode("utf-8"),
         headers={
-            "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
         }
     )
+    request.add_header("x-goog-api-key", api_key)
 
     try:
         with urllib.request.urlopen(request, timeout=60) as response:
             body = json.loads(response.read().decode("utf-8"))
-        choices = body.get("candidates")
-        if not choices or not isinstance(choices[0].get("content", {}).get("parts")[0].get("text"), str):
+        candidates = body.get("candidates") if isinstance(body, dict) else None
+        parts = (
+            candidates[0].get("content", {}).get("parts")
+            if candidates and isinstance(candidates[0], dict)
+            else None
+        )
+        if not isinstance(parts, list):
             raise ValueError("The AI service returned no message.")
-        return choices[0]["content"]["parts"][0]["text"].strip()
+        reply = next(
+            (part["text"].strip() for part in parts
+             if isinstance(part, dict) and isinstance(part.get("text"), str) and part["text"].strip()),
+            "",
+        )
+        if not reply:
+            raise ValueError("The AI service returned no message.")
+        return reply
     except urllib.error.HTTPError as error:
         raise RuntimeError(f"Gemini request failed with HTTP {error.code}.") from error
     except (urllib.error.URLError, TimeoutError) as error:
-        raise RuntimeError("Could not connect to the hosted AI service.") from error
+        raise RuntimeError("Could not connect to Gemini. Check your internet connection and try again.") from error
 
 
 # ====================================
@@ -273,12 +243,12 @@ Question:
 """
 
     try:
-        reply = ask_ollama(system_prompt)
+        reply = ask_gemini(system_prompt)
     except (RuntimeError, ValueError) as error:
         print(f"[STUDYBOT] Request failed: {error}", file=sys.stderr)
         reply = "StudyBot is having trouble right now. Please try again in a moment."
-    print(json.dumps({"reply": reply}))
 
+    print(json.dumps({"reply": reply}))
 
 if __name__ == "__main__":
     main()
